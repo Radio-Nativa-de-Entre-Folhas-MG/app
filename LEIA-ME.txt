@@ -1,110 +1,98 @@
 NATIVA FM 98.7 — O AMOR DE ENTRE FOLHAS
-PWA VERTICAL — VERSÃO 1.5.0
+PWA VERTICAL — VERSÃO 1.6.0
 ========================================
 
-NOVIDADES DA VERSÃO 1.5.0
+NOVIDADES DA VERSÃO 1.6.0
 -------------------------
-- Removidos da interface os quadros de Status, Leitura L/R e outros avisos técnicos.
-- Equalizador GERAL com 28 faixas verticais de frequências, preenchendo a
-  largura disponível (em vez de dois medidores esquerdo/direito).
-- Cada coluna reage aos dados reais do áudio recebido. Não existe movimento
-  fictício ou aleatório durante a execução normal.
-- Visual aprimorado: colunas verde-neon, detalhes amarelo/laranja nos picos,
-  logotipo original maior, botões mais destacados e aproveitamento da tela.
-- Layout sem rolagem, inclusive em janelas compactas do Windows e celulares.
-- Preservado botão verde para ligar e vermelho para desligar.
-- Preservados botões WhatsApp Pedir música e Anuncie com a gente.
+- O botão único de LIGAR/DESLIGAR fica agora no RODAPÉ da tela, abaixo dos
+  botões de WhatsApp. É verde quando a rádio está desligada e vermelho quando
+  está ligada, inclusive durante reconexão.
+- O pequeno símbolo com a letra N no cabeçalho foi substituído pelo logotipo
+  ORIGINAL da Nativa FM, fornecido pela rádio, em um ícone circular.
+- O equalizador geral tem 28 colunas e 17 quadradinhos por coluna (476
+  quadradinhos no total). Cores estilo arco-íris, fixas por coluna e altura.
+  O aumento do sinal ACENDE quadradinhos adicionais acima dos anteriores,
+  sem mudar as cores dos que já estão acesos.
+- Mantida a interface em tela única, sem menu, quadros de diagnóstico ou
+  rolagem vertical. Todos os elementos se ajustam à altura disponível.
+- Mantidos metadados da rádio, reconexão automática, contatos e instalação.
 
-FUNCIONAMENTO
--------------
-Ao visitar o site no navegador comum, a pessoa vê a apresentação da Nativa FM
-com logotipo, slogan e um único botão de instalação. O sistema é detectado
-automaticamente. Nos navegadores que oferecem a instalação nativa, o botão
-abre a confirmação do sistema. No iPhone, são apresentadas orientações simples
-para Adicionar à Tela de Início, pois o iOS não oferece instalação por botão
-com o mesmo comportamento do Chrome/Edge.
+USO DO APLICATIVO
+-----------------
+Ao abrir o site em um navegador comum, o visitante encontra a apresentação
+com o logotipo, o slogan e o botão INSTALAR APLICATIVO. O sistema é detectado
+automaticamente. No Chrome e no Edge, a confirmação de instalação é aberta
+quando o navegador a disponibiliza. No iPhone, o próprio app exibe as
+instruções para adicionar à tela inicial; o iOS não permite concluir a
+instalação inteiramente com um clique do site.
 
-O aplicativo de rádio abre somente na PWA em modo standalone (janela de app).
-O site aberto como guia comum não libera o player. Essa restrição é de
-interface/modo de exibição, e não autenticação criptográfica.
+A rádio só é liberada quando a PWA é aberta em modo de aplicativo instalado
+(standalone), pelo seu ícone. Essa é uma proteção de interface, não uma
+verificação inviolável de instalação.
 
-TELA PRINCIPAL
---------------
-- Logo original Nativa FM 98.7 e slogan "O amor de Entre Folhas".
-- Um botão para ligar/desligar; verde para LIGAR, vermelho para DESLIGAR.
-- Informações da música/programação, quando a emissora fornece metadados.
-- Equalizador musical geral com 28 colunas, sem exibir dados técnicos.
-- WhatsApp para pedir música e para anunciar.
-- Sem menu interno e sem rolagem.
+TELA DA RÁDIO — ORDEM VISUAL
+---------------------------
+1. Cabeçalho com o logotipo original pequeno, nome e indicador no ar.
+2. Logotipo grande, frequência e slogan.
+3. Metadados da música/programação.
+4. Equalizador arco-íris geral, com 28 faixas e 17 níveis de cada faixa.
+5. WhatsApp: Pedir música / Anuncie com a gente.
+6. Botão LIGAR RÁDIO (verde) / DESLIGAR RÁDIO (vermelho).
 
-STREAMING / CONTATOS
---------------------
-Streaming: https://stream.zeno.fm/6lsfodimfbztv
-Metadados: https://api.zeno.fm/mounts/metadata/subscribe/6lsfodimfbztv
-WhatsApp: +55 33 99721-0067
+RECURSOS E OBSERVAÇÕES
+----------------------
+- Streaming: https://stream.zeno.fm/6lsfodimfbztv
+- Metadados: https://api.zeno.fm/mounts/metadata/subscribe/6lsfodimfbztv
+- WhatsApp: +55 33 99721-0067
+- As colunas reagem às frequências REAIS da transmissão quando o navegador
+  permite analisar as amostras digitais. Não há animação fictícia no app.
+- Sem acesso à análise por restrições do streaming/navegador, a reprodução
+  pode funcionar mesmo que o equalizador permaneça apagado.
+- Enquanto a rádio estiver ligada, o aplicativo tenta reconectar após falha
+  de servidor/internet. Fechar ou suspender a PWA pode impedir a retomada.
+- O servidor Node.js incluído é opcional, mas recomendado para permitir a
+  análise de áudio em uma mesma origem e melhorar a compatibilidade.
 
-O equalizador usa as frequências do sinal de áudio reproduzido, analisadas
-localmente com Web Audio. O visualizador não altera o áudio nem adiciona
-um segundo player. Se o navegador/servidor impedir o acesso às amostras, a
-rádio pode tocar em modo compatível, mas o equalizador fica parado: ele não
-mostra barras inventadas. A hospedagem com server.js habilita um proxy da
-mesma origem que ajuda a evitar essa limitação do navegador.
+INICIAR LOCALMENTE
+------------------
+1. Instale Node.js 20 ou mais recente.
+2. Extraia todo o ZIP preservando as pastas.
+3. Windows: execute INICIAR-WINDOWS.bat.
+   Linux/Mac: execute sh INICIAR-LINUX-MAC.sh.
+4. Abra http://localhost:8080, instale a PWA e inicie pelo seu ícone.
+5. No Windows, a PWA tenta abrir em uma janela compacta de até 540×850.
+   O navegador pode preservar outro tamanho ou impedir o ajuste automático.
 
-RECONEXÃO
----------
-Enquanto a rádio estiver ligada, o aplicativo tenta reconectar quando a
-internet falhar ou o sinal de streaming cair. O botão DESLIGAR cancela as
-tentativas. Pausas curtas de buffering não destroem imediatamente a conexão.
-A retomada em segundo plano depende do navegador e do sistema operacional.
-
-EXECUTAR NO WINDOWS
--------------------
-1. Instale Node.js 20 ou superior em seu computador.
-2. Extraia todos os arquivos do ZIP.
-3. Execute INICIAR-WINDOWS.bat (ou node server.js no terminal).
-4. Abra http://localhost:8080 no Chrome ou Edge.
-5. Clique em instalar e depois abra o novo ícone Nativa FM.
-6. Ao abrir a janela do app no Windows, o código tenta dimensioná-la para
-   540 x 850 pixels quando permitido. O navegador pode ignorar esse pedido.
-
-EXECUTAR EM LINUX/MAC
---------------------
-Com Node.js instalado, execute 'sh INICIAR-LINUX-MAC.sh'.
-
-PUBLICAÇÃO
-----------
-Para distribuir, hospede os arquivos em um site com HTTPS. O recomendado é
-uma hospedagem Node.js que execute server.js, pois o proxy permite que o
-analisador use o áudio real mesmo quando a origem do streaming bloqueia CORS.
-Também é possível hospedar como arquivos estáticos, com limitações na leitura
-de frequências dependendo do navegador e das permissões do streaming.
-
-TESTES
-------
-Foram validados localmente em navegador simulado cinco tamanhos de tela:
-540x850, 390x844, 320x480, 360x640 e 412x915. Foram verificados os 28
-níveis, a ausência de rolagem, a visibilidade dos contatos, o botão
-verde/vermelho, e o desligamento que zera as barras. Um áudio de teste com
-várias frequências demonstrou respostas independentes. As imagens de prévia
-são demonstrações de teste, não capturas da transmissão ao vivo da rádio.
-
-A instalação nos sistemas físicos e a reprodução ao vivo da Zeno ainda
-precisam ser testadas depois de publicar a versão atualizada.
+PUBLICAR
+--------
+Para uso pelos ouvintes, publique em hospedagem HTTPS. Se possível, use a
+hospedagem com suporte a Node.js para executar server.js por trás de HTTPS.
+Hospedagem estática também é possível, mas a leitura do equalizador poderá
+ser bloqueada por permissões do streaming. A instalação PWA depende das
+capacidades e permissões do navegador de cada plataforma.
 
 ARQUIVOS
 --------
-index.html             apresentação pública + aplicativo instalado
-styles.css             visual das telas e equalizador
-landing.js             fluxo de instalação conforme dispositivo
-gate.js                modo navegador versus aplicativo
-app.js                 player, equalizador real, metadados e reconexão
-config.js              streaming e WhatsApp
-server.js              servidor e proxy sem dependências npm
-sw.js                  atualização do cache da interface
-manifest.webmanifest   dados e ícones PWA
-assets/                marca da rádio e ícone do WhatsApp
-icons/                 ícones da instalação
-PREVIA-WINDOWS-EQUALIZADOR.png  prévia de teste desktop
-PREVIA-CELULAR-EQUALIZADOR.png  prévia de teste celular
-LAUDO-TECNICO.txt      resumo de mudanças e verificações
-SHA256SUMS.txt         hashes de integridade dos arquivos
+index.html                  estrutura da tela web e do aplicativo
+styles.css                  aparência e disposição adaptável
+app.js                      transmissão, equalizador, reconexão e metadados
+landing.js                  experiência de instalação no navegador
+gate.js                     identifica o modo de exibição
+config.js                   dados da rádio
+server.js                   servidor web/proxy opcional
+sw.js                       cache da interface, atualizado para a versão 1.6.0
+manifest.webmanifest        manifesto PWA
+assets/                     logo original e ícone original WhatsApp
+icons/                      ícones para instalação
+PREVIA-WINDOWS-COLORIDO.png captura com áudio de teste simulado no navegador
+PREVIA-CELULAR-COLORIDO.png captura com áudio de teste simulado no navegador
+PREVIA-WINDOWS-DESLIGADO.png captura da interface desligada
+LAUDO-TECNICO.txt           revisão da versão
+SHA256SUMS.txt              hashes SHA-256 dos arquivos
+
+TESTES
+------
+Testado localmente em navegador isolado com áudio WAV de TESTE, não com o
+streaming ao vivo. As capturas são demonstrações do layout. Verifique o
+streaming real da Zeno, instalação e comportamento em segundo plano em
+Android, iPhone e Windows antes de distribuir aos ouvintes.

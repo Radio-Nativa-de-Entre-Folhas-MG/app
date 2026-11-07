@@ -323,3 +323,56 @@ html:not([data-pwa-display="standalone"]) #appShell{display:none!important}
   .eq-floor{gap:2px}
   .contact-action{font-size:8px;gap:4px;padding:0 5px}
 }
+
+/* V1.6.0 — botão de energia no rodapé, logotipo original e espectro arco-íris. */
+.brand-mark{
+  flex:0 0 40px;width:40px;height:40px;overflow:hidden;
+  border-radius:50%;padding:0;background:transparent;
+  border:1px solid #70d76d55;box-shadow:0 6px 18px #17ad4038;
+}
+.brand-mark img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+/* Metadados acima do espectro; WhatsApp e energia no fim da tela. */
+.home-screen{grid-template-rows:auto auto minmax(100px,1fr) auto auto}
+.power-wrap{align-self:end;width:100%;gap:4px;padding:2px 0 0}
+.power-button{min-height:clamp(52px,7.2dvh,62px)}
+.playback-helper{font-size:clamp(9px,1.35dvh,11px);line-height:1.2}
+.equalizer-card{min-height:0}
+.equalizer{
+  align-items:stretch;
+  padding:8px 5px 2px;
+  background:linear-gradient(180deg,#ffffff04,#0000000b);
+}
+.eq-column{
+  display:flex;flex-direction:column-reverse;justify-content:stretch;
+  gap:clamp(2px,.36dvh,4px);height:100%;min-width:0;
+}
+.eq-column::before{display:none}
+.eq-segment{
+  display:block;width:100%;flex:1 1 0;min-height:0;
+  border-radius:2px;background:#173021;
+  box-shadow:inset 0 1px 0 #ffffff07;
+  opacity:.47;
+  transition:background-color .095s linear, opacity .095s linear, box-shadow .095s linear;
+}
+.eq-segment.is-lit{
+  background:var(--segment-color);opacity:1;
+  box-shadow:0 0 8px color-mix(in srgb,var(--segment-color) 55%,transparent),inset 0 1px 0 #ffffff65;
+}
+@media(max-height:735px){
+  .home-screen{grid-template-rows:auto auto minmax(88px,1fr) auto auto}
+}
+@media(max-height:590px){
+  .home-screen{grid-template-rows:auto auto minmax(64px,1fr) auto auto}
+  .power-button{min-height:43px}
+  .power-wrap{padding-top:0;gap:2px}
+  .brand-mark{flex-basis:34px;width:34px;height:34px}
+  .eq-column{gap:2px}
+}
+@media(max-height:510px){
+  .home-screen{grid-template-rows:auto auto minmax(48px,1fr) auto auto}
+  .hero-logo{height:clamp(37px,10dvh,57px)}
+  .equalizer{min-height:33px;padding-top:2px;padding-bottom:0}
+  .contact-action{min-height:34px}
+  .power-button{min-height:39px}
+  .playback-helper{font-size:8px}
+}

@@ -61,7 +61,7 @@
   <div class="app-shell" id="appShell" hidden>
     <header class="topbar">
       <div class="topbar__brand" aria-label="Nativa FM 98.7">
-        <span class="brand-mark" aria-hidden="true">N<span>•</span></span>
+        <span class="brand-mark"><img src="assets/nativa-fm-original.png" alt="" width="48" height="48"></span>
         <div class="brand-wordmark"><strong>NATIVA <span>FM</span></strong><small>ENTRE FOLHAS · MG</small></div>
       </div>
       <div id="onAirBadge" class="on-air-badge is-off" role="status" aria-live="polite"><span class="badge-dot"></span><span id="badgeText">DESLIGADA</span></div>
@@ -78,14 +78,7 @@
         </div>
       </section>
 
-      <section class="power-wrap" aria-label="Controle de reprodução">
-        <button id="powerButton" class="power-button" type="button" aria-pressed="false" aria-describedby="playbackHelper">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5v9M6.1 6.2a8.2 8.2 0 1 0 11.8 0"/></svg>
-          <span id="powerText">LIGAR RÁDIO</span>
-          <span class="power-chevron" aria-hidden="true">›</span>
-        </button>
-        <p id="playbackHelper" class="playback-helper" role="status" aria-live="polite">Toque para ouvir a programação ao vivo.</p>
-      </section>
+
 
       <section class="now-card" aria-label="Metadados da rádio">
         <div class="card-header"><span class="section-label"><i class="led"></i> TOCANDO AGORA</span><span id="metadataStatus" class="sr-only" aria-live="polite">Aguardando dados</span></div>
@@ -99,7 +92,6 @@
       <section class="equalizer-card" aria-label="Equalizador musical que reage ao som da Nativa FM">
         <div class="card-header equalizer-header"><span class="section-label"><i class="led"></i> SOM AO VIVO</span><span class="eq-decoration" aria-hidden="true">NATIVA <b>98.7</b></span></div>
         <div id="equalizer" class="equalizer" role="img" aria-label="Equalizador de 28 faixas: aguardando áudio" aria-live="off"></div>
-        <div class="eq-floor" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <p id="meterNote" class="sr-only">O equalizador reage às frequências reais do áudio quando disponível.</p>
       </section>
 
@@ -107,6 +99,15 @@
         <a id="requestSong" class="contact-action contact-action--song" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="19" height="19"><span>PEDIR MÚSICA</span></a>
         <a id="advertise" class="contact-action contact-action--ad" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="19" height="19"><span>ANUNCIE COM A GENTE</span></a>
       </nav>
+
+      <section class="power-wrap" aria-label="Controle de reprodução">
+        <button id="powerButton" class="power-button" type="button" aria-pressed="false" aria-describedby="playbackHelper">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5v9M6.1 6.2a8.2 8.2 0 1 0 11.8 0"/></svg>
+          <span id="powerText">LIGAR RÁDIO</span>
+          <span class="power-chevron" aria-hidden="true">›</span>
+        </button>
+        <p id="playbackHelper" class="playback-helper" role="status" aria-live="polite">Toque para ouvir a programação ao vivo.</p>
+      </section>
 
       <p id="connectionText" class="sr-only" role="status" aria-live="polite">Rádio desligada.</p>
     </main>

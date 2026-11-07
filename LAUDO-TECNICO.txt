@@ -1,52 +1,68 @@
-NATIVA FM — LAUDO TÉCNICO DA VERSÃO 1.5.0
+NATIVA FM — LAUDO TÉCNICO V1.6.0
 Data: 06/11/2026
 
-ESCOPO SOLICITADO
-1. Remover os quadros informativos de Status e Leitura L/R.
-2. Aproveitar melhor a altura livre para aumentar e redistribuir a interface.
-3. Trocar dois medidores horizontais por um equalizador completo.
-4. O equalizador NÃO deve ser duplicado por canal: visualização geral.
-5. Continuar sem rolagem e sem dados técnicos na tela do ouvinte.
+ALTERAÇÕES SOLICITADAS
+----------------------
+1. Reposicionar o botão único LIGAR/DESLIGAR ao final da tela.
+2. Adotar cores estilo arco-íris no espectro, com quadradinhos progressivos:
+   cada nível conserva sua cor ao acender níveis adicionais acima dele.
+3. Substituir a letra N do cabeçalho pelo próprio logo original da rádio.
+4. Preservar simplicidade: tela única, compacta, sem menu e sem dados técnicos.
 
-ALTERAÇÕES
-- index.html: removeu o quadro técnico e os medidores de dois canais; criou
-  painel SOM AO VIVO com 28 colunas; preservou a marca, metadados, energia e
-  dois contatos. As informações internas de estado foram mantidas apenas
-  para leitores de tela, fora da interface visual.
-- styles.css: ampliou hero e botões, redimensionou elementos em diferentes
-  alturas e criou equalizador com segmentos luminosos. A área do equalizador
-  se expande para absorver o espaço anteriormente ocupado pelo quadro técnico.
-- app.js: substituiu dois AnalyserNodes por um AnalyserNode para o áudio
-  combinado; FFT 4096, 28 intervalos de frequência logarítmicos, médias
-  energéticas por intervalo e interpolação para suavizar o movimento. O
-  mesmo MediaElementAudioSource envia áudio uma única vez ao alto-falante.
-- sw.js: alterado nome de cache para nativa-fm-v1.5.0, renovando a interface.
-- server.js: atualizada versão de diagnóstico e comentário de espectro.
-- Mantidos: streaming Zeno, integração WhatsApp, metadados, reconexão,
-  mudança verde/vermelho e tentativa de janela compacta no Windows.
+ARQUIVOS MODIFICADOS
+--------------------
+index.html
+- Moveu a seção de energia para depois dos dois contatos WhatsApp.
+- Substituiu o símbolo textual N por um IMG com o arquivo original da rádio.
+- Removeu a linha antiga de marcação estática abaixo do equalizador.
 
-RESULTADO
-- 28 barras reagem às frequências do sinal recebido.
-- Um sinal senoidal pode movimentar poucas colunas; música completa tende a
-  movimentar mais colunas, porque possui mais frequências presentes.
-- Sem áudio real acessível, o equalizador permanece parado. Nenhum movimento
-  é artificialmente inventado.
-- A interface visual não possui linhas ou cartões de diagnóstico técnico.
+styles.css
+- Criou o equalizador de segmentos individuais com espaçamentos reais.
+- Os quadradinhos apagados são discretos. Ao acender, usam sua cor atribuída
+  e brilho correspondente, sem sobrescrever cores dos demais níveis.
+- Ajustou tamanhos do botão inferior, logo do cabeçalho e painel musical.
+- Preservou responsividade compacta, sem rolagem em celulares e Windows.
 
-VERIFICAÇÕES EXECUTADAS
-- Sintaxe JavaScript validada.
-- Teste em Chromium simulado, com áudio multifaixas local (não enviado no ZIP),
-  nas dimensões: 540x850, 390x844, 320x480, 360x640 e 412x915.
-- Todas as 28 colunas criadas e exibiram níveis variáveis conforme o áudio.
-- Sem rolagem e sem cortes dos botões de WhatsApp nos cinco tamanhos.
-- Botão vermelho durante transmissão, verde após desligamento.
-- As barras zeraram ao desligar.
-- Tela de instalação continuou disponível no modo navegador.
-- Fotos de prévia registradas para desktop e celular com áudio de teste.
+app.js
+- Mantidos Web Audio API, 28 bandas logarítmicas, FFT 4096, smoothing de
+  frequências, metadados SSE, player e sistema de reconexão.
+- Criou 17 células por coluna × 28 colunas = 476 células reais.
+- Cada célula recebe uma cor HSL predefinida pela sua posição de frequência
+  e altura. Uma medição acende de baixo para cima as células até o nível real
+  calculado; a célula inferior não muda de cor quando novas células acendem.
+- Desligar zera os níveis e apaga todos os segmentos; não existem barras
+  fictícias para indicar reprodução na ausência de dados.
 
-LIMITAÇÕES / PENDÊNCIAS
-- Instalação no Windows, Android e iOS em equipamentos reais não validada.
-- Streaming real Zeno e qualidade da conexão exigem teste após publicação.
-- A visualização depende de acesso ao áudio no navegador; sem permissão CORS
-  nem proxy, a rádio pode reproduzir sem análise de frequências.
-- O navegador pode não obedecer a tentativa de redimensionar a janela.
+sw.js, server.js
+- Versão do cache e do diagnóstico atualizada para 1.6.0.
+
+PRESERVADO SEM ALTERAÇÃO DE LÓGICA
+---------------------------------
+- Fluxo de instalação Android / iOS / Windows.
+- Um único botão, verde para ligar e vermelho para desligar.
+- WhatsApp para música e anúncios, sem caracteres espúrios nas mensagens.
+- Streaming da Zeno, reconexão e metadados quando disponíveis.
+- Tentativa de janela de até 540×850 no Windows, sujeita ao navegador.
+
+TESTES EXECUTADOS
+-----------------
+- Sintaxe JavaScript: arquivos principais válidos pelo Node.js.
+- Chromium com HTML/CSS injetados localmente e áudio WAV sintético de teste:
+  540×850, 390×844, 320×480, 360×640 e 412×915.
+- Em todos: 28 colunas, 476 segmentos, quadradinhos acesos conforme o áudio
+  de teste, múltiplas cores reais, botão depois do WhatsApp e tela sem rolagem.
+- As células acendem apenas de baixo para cima, preservando a cor de cada
+  quadradinho. Ao desligar, nenhuma célula permanece acesa.
+- Site em modo navegador: somente a página de instalação.
+- O app instalado usa o logotipo original também no ícone de cabeçalho.
+- Prévia Windows/celular criada com o áudio de teste, não streaming ao vivo.
+
+LIMITAÇÕES E VALIDACOES PENDENTES
+--------------------------------
+- O navegador de teste com navegação local HTTP estava bloqueado neste
+  ambiente; a interface foi testada com HTML/CSS carregados em memória.
+- Falta confirmar o streaming real da Zeno, queda/retorno de internet e o
+  comportamento da PWA em segundo plano em aparelhos reais.
+- Sem liberação de acesso às amostras (CORS) e sem proxy, a reprodução pode
+  continuar, porém o equalizador fica sem medições em vez de simular barras.
+- Windows/Android/iOS podem limitar a instalação ou a abertura do aplicativo.

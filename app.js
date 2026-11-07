@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.5.0 — equalizador completo de 28 bandas, sem indicadores técnicos na tela. */
+/* Nativa FM 1.6.0 — equalizador completo de 28 bandas, sem indicadores técnicos na tela. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -58,6 +58,7 @@
   };
 
   const BANDS = 28;
+  const EQ_SEGMENTS = 17;
   const STARTUP_TIMEOUT = 35000;
   const BUFFER_TIMEOUT = 28000;
   const STABLE_PLAYBACK = 20000;
@@ -90,15 +91,23 @@
   ui.requestSong.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de pedir uma música na programação.');
   ui.advertise.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de saber como anunciar com vocês. Podem enviar informações e valores?');
 
-  // Um espectro geral com 28 colunas independentes e nenhuma animação falsa.
-  const eqBars = Array.from({length: BANDS}, () => {
+  // Espectro de 28 bandas × 17 quadradinhos. Cada quadradinho recebe uma
+  // cor imutável, variando tanto por frequência quanto pela altura. Somente
+  // o estado ativo muda; os segmentos inferiores nunca trocam de cor.
+  const eqBars = Array.from({length: BANDS}, (_, band) => {
     const column = document.createElement('span');
     column.className = 'eq-column';
-    const fill = document.createElement('span');
-    fill.className = 'eq-fill';
-    column.appendChild(fill);
+    column.setAttribute('aria-hidden', 'true');
+    const segments = Array.from({length: EQ_SEGMENTS}, (_, level) => {
+      const cell = document.createElement('span');
+      cell.className = 'eq-segment';
+      const hue = (195 + band * (315 / (BANDS - 1)) + level * 13) % 360;
+      cell.style.setProperty('--segment-color', `hsl(${hue.toFixed(1)} 95% 62%)`);
+      column.appendChild(cell);
+      return cell;
+    });
     ui.equalizer.appendChild(column);
-    return fill;
+    return segments;
   });
 
   function setConnectionInfo(text) {
@@ -125,7 +134,9 @@
 
   function resetMeters(note = 'Equalizador aguardando áudio.') {
     state.levels.fill(0);
-    for (const bar of eqBars) bar.style.height = '0%';
+    for (const segments of eqBars) {
+      for (const cell of segments) cell.classList.remove('is-lit');
+    }
     ui.equalizer.classList.remove('is-receiving');
     ui.equalizer.setAttribute('aria-label', note);
     ui.meterNote.textContent = note;
@@ -242,8 +253,10 @@
       const target = Math.max(0, Math.min(1, (db + 91) / 76));
       const next = state.levels[i] + (target - state.levels[i]) * (target > state.levels[i] ? .46 : .17);
       state.levels[i] = next < .008 ? 0 : next;
-      const height = state.levels[i] * 100;
-      eqBars[i].style.height = `${height.toFixed(1)}%`;
+      const litCount = Math.min(EQ_SEGMENTS, Math.max(0, Math.round(state.levels[i] * EQ_SEGMENTS)));
+      for (let level = 0; level < EQ_SEGMENTS; level++) {
+        eqBars[i][level].classList.toggle('is-lit', level < litCount);
+      }
       if (target > .055) signalFound = true;
     }
     ui.equalizer.classList.toggle('is-receiving', signalFound);

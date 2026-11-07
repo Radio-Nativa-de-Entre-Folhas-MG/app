@@ -1,95 +1,91 @@
 NATIVA FM 98.7 — O AMOR DE ENTRE FOLHAS
-PWA VERTICAL — VERSÃO 1.6.2
+APLICATIVO PWA | VERSÃO 1.7.0
 ========================================
 
-NOVIDADE DESTA VERSÃO
---------------------
-O equalizador agora utiliza SEIS CORES PROFISSIONAIS PROGRESSIVAS:
-- Verde-escuro — primeiros níveis (3 segmentos).
-- Verde — níveis baixos (3 segmentos).
-- Verde-limão — níveis moderados (3 segmentos).
-- Amarelo — níveis médios/altos (3 segmentos).
-- Laranja — níveis elevados (3 segmentos).
-- Vermelho — picos (2 segmentos).
+O QUE HÁ NESTA VERSÃO
+---------------------
+A interface do aplicativo instalado reproduz o conceito visual aprovado:
+- Identidade verde e preta, painéis luminosos, logotipo ORIGINAL da rádio.
+- NOVO equalizador CIRCULAR ao redor do logotipo com 72 barras segmentadas.
+- Cada barra representa uma faixa de frequência; os níveis vêm da análise
+  FFT do streaming recebido (Web Audio API), e não de uma animação aleatória.
+- Resposta rápida (ataque aproximado de 16 ms e queda de 110 ms), com
+  intensidade ajustada de acordo com cada banda de frequência.
+- Paleta circular de cores do conceito visual, com ciano, verdes, amarelo,
+  laranja, vermelho, rosa, violeta e azul distribuídos pelas posições.
+- Indicador NO AR, destaque 98.7 FM, slogan, música tocando, WhatsApp e
+  botão único grande no rodapé: verde para ligar, vermelho para desligar.
+- Tela única sem menu ou textos técnicos; sem rolagem no app instalado.
+- No Windows, a PWA tenta usar uma janela compacta; Chrome/Edge podem recusar
+  o redimensionamento programático e manter o último tamanho da janela.
 
-São 28 colunas de frequências × 17 segmentos por coluna. Cada quadradinho
-possui uma cor fixa, independente das outras bandas: quando o som aumenta,
-os novos quadradinhos acendem acima dos anteriores, sem alterar as cores da
-base. A resposta foi acelerada para acompanhar batidas e variações rápidas.
-
-PRESERVADO DA VERSÃO ANTERIOR
-----------------------------
-- Tela vertical única, compacta, sem menu e sem rolagem.
-- Logotipo original da Nativa FM no cabeçalho e no destaque principal.
-- Metadados da música/programação.
-- Equalizador geral, sem separar L/R.
-- WhatsApp: Pedir música / Anuncie com a gente.
-- Botão LIGAR (verde) / DESLIGAR (vermelho) embaixo de todos os controles.
-- Reconexão automática, tentativa de janela compacta no Windows.
+DADOS DA RÁDIO
+--------------
+Stream: https://stream.zeno.fm/6lsfodimfbztv
+Metadados SSE: https://api.zeno.fm/mounts/metadata/subscribe/6lsfodimfbztv
+WhatsApp: +55 33 99721-0067
+Mensagens sem caracteres especiais decorativos, com URL corretamente codificada.
 
 INSTALAÇÃO
 ----------
-No navegador comum aparece apenas a apresentação e o botão INSTALAR
-APLICATIVO. O sistema operacional é identificado automaticamente. Quando
-o navegador oferece instalação direta, o botão abre a solicitação de
-instalação. No iPhone, o Safari exige adicionar à Tela de Início manualmente;
-o app orienta a pessoa sem pedir a seleção de sistema operacional.
-
-Depois de instalar, abra a Nativa FM pelo seu ícone. A interface da rádio
-é disponibilizada em modo PWA standalone. A verificação é de modo de janela,
-não uma prova de instalação inviolável.
-
-DADOS CONFIGURADOS
-------------------
-Streaming: https://stream.zeno.fm/6lsfodimfbztv
-Metadados: https://api.zeno.fm/mounts/metadata/subscribe/6lsfodimfbztv
-WhatsApp: +55 33 99721-0067
-Slogan: O amor de Entre Folhas
+Ao visitar o site pelo navegador, só aparece a apresentação da Nativa FM e
+INSTALAR APLICATIVO. A interface de reprodução só aparece em modo standalone,
+quando a PWA é aberta pelo ícone instalado. Sem menu ou modal de instalação.
+O site identifica o dispositivo e oferece o fluxo disponível. O iOS não
+permite instalação totalmente automática pelo botão: as instruções aparecem
+na própria tela após o toque; no Safari, o caminho é Compartilhar >
+Adicionar à Tela de Início. Em Android/Windows, a caixa nativa aparece se o
+navegador oferecer beforeinstallprompt.
+A PWA precisa ser disponibilizada em HTTPS (ou localhost apenas em testes).
 
 COMO EXECUTAR
 -------------
-Windows: instale Node.js 20+ e execute INICIAR-WINDOWS.bat.
-Linux/macOS: instale Node.js 20+ e execute sh INICIAR-LINUX-MAC.sh.
-Acesse http://localhost:8080 pelo navegador, instale e abra pelo ícone.
+Windows: instale Node.js 20+ e execute INICIAR-WINDOWS.bat na pasta extraída.
+Linux/macOS: instale Node.js 20+ e execute INICIAR-LINUX-MAC.sh.
+Acesse http://localhost:8080 no navegador; instale e abra pelo ícone.
 
-PUBLICAÇÃO
-----------
-Hospede com HTTPS para distribuição real da PWA. O servidor Node.js
-incluído é recomendado para compatibilidade com a análise de áudio por
-mesma origem. É possível publicar de forma estática, mas o navegador pode
-bloquear a medição das frequências se o streaming não liberar as amostras.
+PUBLICAR
+--------
+Recomendado: hospedar os arquivos com server.js (Node.js 20+), atrás de HTTPS.
+O proxy opcional serve o áudio da Zeno na mesma origem da PWA, permitindo
+análise do espectro no navegador mesmo quando a origem do áudio restringe
+acesso direto ao conteúdo bruto (CORS). O proxy não grava nem altera o som.
+Alternativa: hospedagem estática HTTPS, sem servidor Node. Reprodução direta
+pode funcionar, mas o equalizador ficará inativo nos navegadores que não
+permitirem analisar o áudio por restrição CORS. Nunca gerar dados falsos.
 
-FUNCIONAMENTO DO EQUALIZADOR
-----------------------------
-- Visualização real de frequências do streaming, quando acessível.
-- Não simula movimento caso a análise esteja bloqueada.
-- Resposta rápida dos picos e queda mais ágil após a diminuição de sinal.
-- O sistema pode suspender o processamento da PWA em segundo plano.
-
-ARQUIVOS PRINCIPAIS
--------------------
-index.html                 interface de instalação e rádio
-styles.css                 design, cores e responsividade
-app.js                     player, equalizador, metadados e reconexão
-landing.js                 instalação com identificação do dispositivo
-gate.js                    bloqueio do rádio em navegador comum
-config.js                  dados da rádio e WhatsApp
-server.js                  servidor/proxy de áudio opcional
-sw.js                      cache da interface v1.6.2
-manifest.webmanifest       manifesto de instalação
-assets/                    logotipo original e ícone do WhatsApp
-icons/                     ícones do PWA
-PREVIA-WINDOWS-6-CORES.png  prévia com sinal de teste simulado
-PREVIA-CELULAR-6-CORES.png  prévia com sinal de teste simulado
-PREVIA-WINDOWS-DESLIGADO.png  prévia da rádio desligada
-LAUDO-TECNICO.txt          diagnóstico e resultados
-SHA256SUMS.txt             hashes de arquivos
-
-VALIDAÇÃO
+RECONEXÃO
 ---------
-Testado no navegador Chromium com áudio sintético e cinco tamanhos de tela.
-O teste com níveis altos confirmou que as seis cores podem acender, sem mudar
-as cores dos quadradinhos inferiores. As imagens de prévia mostram apenas
-um sinal de teste, não a programação real da Nativa FM. É necessário testar
-a transmissão ao vivo da Zeno e a instalação nas plataformas reais antes
-de disponibilizar a versão aos ouvintes.
+Ao ligar, a rádio tenta sintonizar imediatamente. Quedas prolongadas fazem
+novas tentativas em 2, 4, 7, 12, 20, 30, 45 e até 60 segundos. Pequenos
+períodos de buffering são tolerados antes de reconstruir a conexão. O botão
+DESLIGAR interrompe o áudio e cancela todas as tentativas de reconexão.
+O sistema operacional pode suspender uma PWA fechada ou em segundo plano;
+nenhuma PWA pode garantir reconexão ilimitada nessas condições.
+
+PREVIAS
+-------
+PREVIA-CELULAR.png e PREVIA-WINDOWS.png são capturas do layout renderizado,
+com a análise animada alimentada por SINAL DE TESTE sintético. NÃO representam
+validação do stream real da Zeno nem metadados reais.
+REFERENCIA-VISUAL.png guarda a arte conceitual usada na adaptação.
+
+ARQUIVOS DO PROJETO
+-------------------
+index.html               interface de instalação + rádio instalada
+styles.css               aparência fiel ao conceito visual
+app.js                   player, espectro radial, metadados, reconexão
+landing.js               instalação conforme navegador/sistema
+config.js                stream, marca, WhatsApp
+gate.js                  identifica modo aplicativo
+manifest.webmanifest     instalação e ícones
+sw.js                    cache de arquivos estáticos, nunca do streaming
+server.js                servidor/proxy opcional de áudio e metadados
+assets/ e icons/         logotipo original e ícones do aplicativo
+LAUDO-TECNICO.txt        testes e limitações
+SHA256SUMS.txt           hashes SHA-256 individuais
+
+IMPORTANTE: avaliar a aplicação em um dispositivo real e na hospedagem
+final. Os metadados dependem do envio de título/artista pela estação.
+PREVIA-INSTALACAO.png demonstra a página de instalação. A solicitação nativa
+precisa ser validada no navegador e dispositivo em que a PWA for instalada.

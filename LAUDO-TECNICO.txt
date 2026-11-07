@@ -1,62 +1,53 @@
-NATIVA FM — LAUDO TÉCNICO V1.6.2
-Data: 06/11/2026
+NATIVA FM — LAUDO TÉCNICO V1.7.0
+Data: 07/11/2026
 
-ALTERAÇÃO SOLICITADA
+OBJETIVO
+--------
+Recriar a interface aprovada pelo usuário, inspirada na imagem conceitual
+Nativa FM neon, com o logotipo original dentro de um equalizador circular
+responsivo por frequências, preservando o funcionamento da PWA.
+
+ALTERAÇÕES PRINCIPAIS
 --------------------
-Aplicar padrão moderno de SEIS CORES ao equalizador geral, sem retornar ao
-arco-íris e sem perder a resposta rápida da versão anterior.
+- index.html: tela principal refeita; logo original ao centro de um painel
+  circular; cabeçalho luminoso, selo NO AR, 98.7 FM, slogan, metadados,
+  WhatsApp e botão ligar/desligar no rodapé.
+- styles.css: identidade verde/neon, fundo escuro, cartões com borda luminosa,
+  botão verde/desligado e vermelho/ligado; tamanho responsivo sem rolagem.
+- app.js: Web Audio Analyser FFT (4096 amostras), 72 bandas logarítmicas entre
+  50 Hz e 16 kHz ou limite permitido pela amostragem; Canvas 2D com 13
+  segmentos coloridos por coluna e níveis independentes.
+- A suavização agora usa aproximadamente 16 ms de ataque e 110 ms de queda.
+  O visualizador não anima artificialmente quando não há sinal de áudio.
+- mantidos: streaming Zeno, metadados SSE, reconexão, botão único,
+  WhatsApp codificado, logo original, gate de instalação e suporte PWA.
+- cache do Service Worker e integridade do server.js versionados em 1.7.0.
 
-IMPLEMENTAÇÃO
--------------
-- Arquivo app.js: introduzida paleta de seis faixas profissionais e fixas por
-  altura, de baixo para cima:
-  verde-escuro #168F4D (3 quadradinhos)
-  verde        #28D472 (3 quadradinhos)
-  verde-limão  #ADEB57 (3 quadradinhos)
-  amarelo      #F4D448 (3 quadradinhos)
-  laranja      #F99A3E (3 quadradinhos)
-  vermelho     #F04C57 (2 quadradinhos)
-- Preservadas 28 bandas × 17 segmentos = 476 quadradinhos.
-- A cor de cada posição é constante: quando o nível aumenta, acendem mais
-  células acima; as já acesas não mudam de cor.
-- Mantidos o ataque de 14 ms e o decaimento de 70 ms, e a análise FFT real.
-- Arquivo styles.css: anotação da revisão visual.
-- sw.js: cache novo v1.6.2, evitando manter a versão antiga.
-- server.js: identificação da versão 1.6.2 no endpoint de integridade.
-- LEIA-ME.txt: instruções atualizadas.
+NOTAS IMPORTANTES
+-----------------
+A imagem original é um conceito estático; a interface foi RECONSTRUÍDA com
+componentes HTML/CSS/Canvas funcionais, para ficar visualmente próxima sem
+transformar o app inteiro numa imagem. Pequenas variações de tipografia,
+tamanhos e sombras ocorrem em sistemas, telas e navegadores diferentes.
+Na presença de áudio real, cada banda reage ao espectro capturado. Os
+níveis não são valores de medição calibrada em LUFS nem VU analógico.
+Na ausência de acesso ao áudio bruto, o player pode continuar reproduzindo
+em modo compatível, mas o espectro permanecerá parado, sem simulação.
+O iPhone requer o fluxo permitido pelo Safari para adicionar a PWA.
 
-PRESERVADO
-----------
-- Logotipo original da Nativa FM, metadados, tela única e sem rolagem.
-- Botão ligar/desligar no rodapé, verde ao desligar e vermelho ao ligar.
-- WhatsApp para pedidos musicais e anúncios.
-- Reconexão automática do streaming Zeno.
-- Página pública de instalação PWA e janela compacta no Windows, quando
-  permitida pelo navegador.
-
-VALIDAÇÃO
----------
-- Sintaxe app.js, sw.js e server.js validada pelo Node.js.
-- Teste local em Chromium: 540×850, 390×844, 320×480, 360×640 e 412×915.
-  Em todos, 28 colunas e 476 segmentos, sem rolagem; controles e botão no
-  rodapé visíveis.
-- Conferida a paleta EXATA de 6 cores e a sequência fixa 3/3/3/3/3/2
-  em cada uma das 28 bandas.
-- Teste com áudio WAV sintético: barras reagiram ao som e ficaram apagadas
-  ao desligar; cores idênticas por altura em todas as colunas.
-- Teste de resposta rápida com medição controlada do analisador:
-  aproximadamente 67 ms para subir a 15 segmentos e 132 ms para descer
-  abaixo de 5 segmentos, resultados sujeitos à cadência do navegador.
-- Teste de nível elevado confirmou a iluminação das células vermelhas,
-  sem alterar a cor dos segmentos já acesos.
-- Servidor Node.js conferido: HTML, scripts, estilos, manifesto, imagem e
-  rota de integridade retornaram HTTP 200; versão 1.6.2 confirmada.
-- Prévia usa SINAL DE TESTE SIMULADO para mostrar todas as seis cores;
-  não é captura da programação real da emissora.
-
-LIMITAÇÕES
-----------
-- Se o navegador bloquear o acesso à amostra de áudio, o equalizador não
-  inventa níveis: as barras permanecem apagadas.
-- É necessária a verificação da transmissão real e da instalação em
-  Android, iOS e Windows antes da publicação final.
+TESTES EVIDENCIADOS
+-------------------
+- Código JavaScript verificado por node --check.
+- Testes de navegador automatizados com áudio sintético: abrir PWA simulada,
+  ligar/desligar rádio e gerar movimento do visualizador com energia por
+  frequência; sem erros de JavaScript.
+- Layout conferido em capturas de 390x844, 540x850, 320x568 e 320x480.
+- Conferir antes da distribuição: instalação real no Android/iOS/Windows,
+  streaming ao vivo, metadados e recuperação após queda física da internet.
+- Teste local HTTP realizado com Node.js em porta alternativa: HTML, CSS,
+  scripts, manifesto, ícones e /api/health responderam HTTP 200.
+- A automação Chromium bloqueou endereços locais por política do ambiente;
+  por isso a renderização e interação visual foram validadas por HTML/CSS/JS
+  injetados em página de testes, não pelo servidor local dentro do Chromium.
+- Fluxo público de instalação validado nesse ambiente de testes: botão
+  INSTALAR APLICATIVO presente e sem modal com FECHAR/TENTAR NOVAMENTE.

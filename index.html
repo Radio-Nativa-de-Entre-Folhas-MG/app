@@ -2,16 +2,16 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <meta name="theme-color" content="#07140d">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+  <meta name="theme-color" content="#07100a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Nativa FM">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Nativa FM 98.7 — O amor de Entre Folhas. Ouça a rádio ao vivo em um aplicativo leve e elegante.">
-  <meta property="og:title" content="Nativa FM 98.7 · O amor de Entre Folhas">
-  <meta property="og:description" content="Instale o aplicativo oficial da Nativa FM e acompanhe a programação ao vivo.">
+  <meta name="description" content="Nativa FM 98.7 — O amor de Entre Folhas. Ouça a programação ao vivo no aplicativo oficial.">
+  <meta property="og:title" content="Nativa FM 98.7 — O amor de Entre Folhas">
+  <meta property="og:description" content="Instale a Nativa FM e ouça a sua programação ao vivo.">
   <meta property="og:image" content="assets/nativa-fm-original.png">
   <link rel="icon" type="image/png" href="icons/favicon-64.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -24,13 +24,12 @@
   <title>Nativa FM 98.7 — O amor de Entre Folhas</title>
 </head>
 <body>
-  <section id="installLanding" class="install-landing" aria-label="Instalação do aplicativo Nativa FM">
+  <section id="installLanding" class="install-landing" aria-label="Instalar o aplicativo Nativa FM">
     <div class="install-landing__inner">
       <header class="landing-header">
         <span class="landing-header__brand"><span class="landing-live-dot" aria-hidden="true"></span>NATIVA FM</span>
         <span class="landing-header__frequency">98.7 FM · ENTRE FOLHAS</span>
       </header>
-
       <div class="landing-welcome">
         <div class="landing-logo-glow">
           <img class="landing-logo" src="assets/nativa-fm-original.png" alt="Logotipo original da Nativa FM 98.7" width="500" height="500">
@@ -38,81 +37,82 @@
         <span class="landing-eyebrow">APLICATIVO OFICIAL</span>
         <h1 class="landing-title">Nativa FM <span>98.7</span></h1>
         <p class="landing-slogan">O amor de <strong>Entre Folhas.</strong></p>
-        <p class="landing-copy">Leve a programação da Nativa FM com você em um aplicativo prático, elegante e pronto para o seu dispositivo.</p>
-
+        <p class="landing-copy">Sua rádio favorita, sempre com você. Instale e ouça a programação ao vivo com um toque.</p>
         <div class="landing-actions">
           <button id="landingInstallButton" class="landing-primary" type="button" aria-describedby="landingInstallHint">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg>
             <span id="landingInstallLabel">INSTALAR APLICATIVO</span>
           </button>
-          <p id="landingInstallHint" class="landing-hint" aria-live="polite">Instale gratuitamente e tenha a Nativa FM sempre por perto.</p>
+          <p id="landingInstallHint" class="landing-hint" aria-live="polite">Instalação gratuita · Android · iPhone · Windows</p>
         </div>
       </div>
-
-      <footer class="landing-footer">
-        <span>DISPONÍVEL PARA</span>
-        <div><span>Android</span><i aria-hidden="true"></i><span>iPhone</span><i aria-hidden="true"></i><span>Windows</span></div>
-      </footer>
+      <footer class="landing-footer">NATIVA FM 98.7 <span>·</span> O AMOR DE ENTRE FOLHAS</footer>
     </div>
-
-
   </section>
 
   <div class="app-shell" id="appShell" hidden>
     <header class="topbar">
       <div class="topbar__brand" aria-label="Nativa FM 98.7">
-        <span class="brand-mark"><img src="assets/nativa-fm-original.png" alt="" width="48" height="48"></span>
-        <div class="brand-wordmark"><strong>NATIVA <span>FM</span></strong><small>ENTRE FOLHAS · MG</small></div>
+        <span class="brand-mark"><img src="assets/nativa-fm-original.png" alt="" width="60" height="60"></span>
+        <span class="brand-divider" aria-hidden="true"></span>
+        <span class="brand-wordmark"><strong>NATIVA FM</strong><small>ENTRE FOLHAS · MG</small></span>
       </div>
-      <div id="onAirBadge" class="on-air-badge is-off" role="status" aria-live="polite"><span class="badge-dot"></span><span id="badgeText">DESLIGADA</span></div>
+      <div id="onAirBadge" class="on-air-badge is-off" role="status" aria-live="polite">
+        <span class="badge-dot" aria-hidden="true"></span><span id="badgeText">DESLIGADA</span>
+      </div>
     </header>
 
-    <main class="home-screen" aria-label="Aplicativo Nativa FM">
-      <section class="hero" aria-label="Identidade da rádio">
-        <div class="hero-logo-wrap">
-          <img class="hero-logo" src="assets/nativa-fm-original.png" width="500" height="500" alt="Logotipo original da Nativa FM, verde com fone de ouvido">
+    <main class="home-screen" aria-label="Rádio Nativa FM">
+      <section class="hero" aria-label="Identidade da rádio e equalizador circular">
+        <div class="visual-stage">
+          <div class="visual-atmosphere" aria-hidden="true"></div>
+          <div class="radial-visualizer" id="radialVisualizer">
+            <canvas id="radialCanvas" role="img" aria-label="Equalizador circular por frequência. Aguarda o início do áudio."></canvas>
+            <div class="logo-orbit" aria-hidden="true">
+              <img class="hero-logo" src="assets/nativa-fm-original.png" width="500" height="500" alt="">
+            </div>
+          </div>
         </div>
         <div class="hero-text">
-          <p class="frequency">98.7 <span>FM</span></p>
-          <h1>O amor de <em>Entre Folhas</em></h1>
+          <div class="frequency-row"><span class="frequency-decoration" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <p class="frequency">98.7 <span>FM</span></p>
+            <span class="frequency-decoration" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+          <h1>O amor de Entre Folhas</h1>
         </div>
       </section>
 
-
-
-      <section class="now-card" aria-label="Metadados da rádio">
-        <div class="card-header"><span class="section-label"><i class="led"></i> TOCANDO AGORA</span><span id="metadataStatus" class="sr-only" aria-live="polite">Aguardando dados</span></div>
-        <div class="now-content">
-          <span class="music-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 19V6.4L20 4v12.5M9 19c0 2-5 2.8-5 0s5-2.8 5 0Zm11-2.5c0 2-5 2.8-5 0s5-2.8 5 0Z"/></svg></span>
-          <div class="now-copy"><p id="trackTitle" class="now-title">Nativa FM 98.7</p><p id="trackArtist" class="now-artist">O amor de Entre Folhas</p></div>
-          
+      <section class="now-card" aria-label="Música tocando agora">
+        <div class="music-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 19V6.4L20 4v12.5M9 19c0 2-5 2.8-5 0s5-2.8 5 0Zm11-2.5c0 2-5 2.8-5 0s5-2.8 5 0Z"/></svg>
         </div>
+        <div class="now-divider" aria-hidden="true"></div>
+        <div class="now-copy">
+          <p class="now-label">TOCANDO AGORA</p>
+          <p id="trackTitle" class="now-title">Nativa FM 98.7</p>
+          <p id="trackArtist" class="now-artist">O amor de Entre Folhas</p>
+        </div>
+        <span class="now-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span id="metadataStatus" class="sr-only" aria-live="polite">Aguardando metadados</span>
       </section>
 
-      <section class="equalizer-card" aria-label="Equalizador musical que reage ao som da Nativa FM">
-        <div class="card-header equalizer-header"><span class="section-label"><i class="led"></i> SOM AO VIVO</span><span class="eq-decoration" aria-hidden="true">NATIVA <b>98.7</b></span></div>
-        <div id="equalizer" class="equalizer" role="img" aria-label="Equalizador de 28 faixas: aguardando áudio" aria-live="off"></div>
-        <p id="meterNote" class="sr-only">O equalizador reage às frequências reais do áudio quando disponível.</p>
-      </section>
-
-      <nav class="contact-bar" aria-label="Contato da rádio">
-        <a id="requestSong" class="contact-action contact-action--song" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="19" height="19"><span>PEDIR MÚSICA</span></a>
-        <a id="advertise" class="contact-action contact-action--ad" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="19" height="19"><span>ANUNCIE COM A GENTE</span></a>
+      <nav class="contact-bar" aria-label="Fale com a Nativa FM pelo WhatsApp">
+        <a id="requestSong" class="contact-action" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="25" height="25"><span>PEDIR MÚSICA</span></a>
+        <a id="advertise" class="contact-action" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="25" height="25"><span>ANUNCIE<br>COM A GENTE</span></a>
       </nav>
 
-      <section class="power-wrap" aria-label="Controle de reprodução">
+      <section class="power-wrap" aria-label="Ligar ou desligar a Nativa FM">
         <button id="powerButton" class="power-button" type="button" aria-pressed="false" aria-describedby="playbackHelper">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5v9M6.1 6.2a8.2 8.2 0 1 0 11.8 0"/></svg>
+          <span class="power-divider" aria-hidden="true"></span>
           <span id="powerText">LIGAR RÁDIO</span>
-          <span class="power-chevron" aria-hidden="true">›</span>
         </button>
-        <p id="playbackHelper" class="playback-helper" role="status" aria-live="polite">Toque para ouvir a programação ao vivo.</p>
+        <p id="playbackHelper" class="sr-only" role="status" aria-live="polite">Toque para ouvir a programação ao vivo.</p>
       </section>
 
+      <p id="meterNote" class="sr-only">Aguardando áudio.</p>
       <p id="connectionText" class="sr-only" role="status" aria-live="polite">Rádio desligada.</p>
     </main>
   </div>
-
   <noscript><div class="noscript">Ative o JavaScript para instalar e usar o aplicativo da Nativa FM.</div></noscript>
 </body>
 </html>

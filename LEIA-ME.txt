@@ -1,0 +1,95 @@
+NATIVA FM 98.7 — O AMOR DE ENTRE FOLHAS
+PWA VERTICAL — VERSÃO 1.3.0
+========================================
+
+VISÃO GERAL
+-----------
+Esta versão foi reorganizada para funcionar da seguinte forma:
+- Ao abrir o endereço web, a pessoa vê apenas a apresentação da Nativa FM,
+  com logotipo, slogan e o botão INSTALAR APLICATIVO.
+- O próprio PWA identifica o tipo de dispositivo e tenta iniciar a instalação
+  pelo caminho mais adequado, sem pedir que a pessoa escolha Android, iPhone,
+  Windows ou outro sistema.
+- Depois de instalado, o aplicativo abre em modo próprio e mostra a rádio,
+  com tela única, compacta, sem rolagem e sem menu interno.
+
+CONFIGURAÇÃO DA RÁDIO
+---------------------
+Nome: Nativa FM 98.7
+Slogan: O amor de Entre Folhas
+Streaming: https://stream.zeno.fm/6lsfodimfbztv
+Metadados: https://api.zeno.fm/mounts/metadata/subscribe/6lsfodimfbztv
+WhatsApp: +55 33 99721-0067
+
+FUNÇÕES PRINCIPAIS
+------------------
+- Página pública de instalação com aparência profissional.
+- Botão único de instalação, com identificação automática do dispositivo.
+- Aplicativo instalado com tela principal única, sem menu e sem rolagem.
+- Logotipo da rádio, slogan, metadados, VU-meter L/R, botão liga/desliga.
+- Botões de WhatsApp: Pedir música e Anuncie com a gente.
+- Reconexão automática quando o sinal cair ou a internet falhar, enquanto a
+  rádio permanecer ligada.
+- Medição real RMS em dBFS dos canais esquerdo e direito, quando o navegador
+  permitir analisar o áudio.
+
+OBSERVAÇÃO IMPORTANTE SOBRE A INSTALAÇÃO
+----------------------------------------
+O comportamento varia conforme o sistema:
+- Android e Windows: quando o navegador permitir, o botão já chama a janela
+  de instalação automaticamente.
+- iPhone / iOS: o próprio app identifica o iPhone e mostra instruções simples,
+  porque nesse sistema a instalação é feita pelo Safari.
+- Outros sistemas: o app mostra a orientação mais adequada disponível.
+
+Ou seja: o usuário não precisa escolher o sistema operacional manualmente.
+
+EXECUTAR LOCALMENTE
+-------------------
+WINDOWS
+1. Instale Node.js 20 ou superior.
+2. Extraia o ZIP completo.
+3. Execute INICIAR-WINDOWS.bat.
+4. Abra http://localhost:8080.
+5. Instale o aplicativo e depois abra pelo ícone criado.
+
+LINUX / MAC
+1. Instale Node.js.
+2. Extraia o ZIP.
+3. Execute: sh INICIAR-LINUX-MAC.sh
+4. Abra http://localhost:8080.
+5. Instale o aplicativo e depois abra pelo ícone criado.
+
+PUBLICAÇÃO
+----------
+Para uso com ouvintes, publique o projeto em uma hospedagem normal para site,
+preferencialmente com Node.js, para manter o servidor auxiliar de streaming.
+Sem o servidor auxiliar, o aplicativo continua funcionando, mas a leitura
+completa dos VU-meters pode depender das permissões do streaming.
+
+RECONEXÃO AUTOMÁTICA
+--------------------
+Enquanto a rádio estiver ligada, o aplicativo continua tentando reconectar
+após falhas de transmissão ou internet. Pausas curtas de carregamento são
+tratadas antes de reiniciar a conexão, para evitar cortes desnecessários.
+
+ARQUIVOS PRINCIPAIS
+-------------------
+index.html               tela pública e tela principal do app
+landing.js               instalação automática / assistida por dispositivo
+app.js                   player, reconexão, VU-meters e metadados
+gate.js                  decide se mostra a vitrine ou o aplicativo
+styles.css               layout refinado e sem rolagem
+config.js                dados da rádio e contatos
+server.js                servidor local / proxy opcional
+sw.js                    cache da interface
+manifest.webmanifest     dados do PWA
+assets/                  logotipo da rádio e ícone do WhatsApp
+icons/                   ícones do aplicativo
+
+IMPORTANTE
+----------
+O navegador comum não deve ser usado para ouvir a rádio. O uso é feito pelo
+aplicativo instalado. Os testes de lógica foram realizados neste ambiente, mas
+é recomendável validar a instalação e o streaming real em Android, iPhone e
+Windows antes da distribuição final.

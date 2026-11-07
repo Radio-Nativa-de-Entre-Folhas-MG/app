@@ -1,0 +1,81 @@
+NATIVA FM PWA — LAUDO TÉCNICO V1.3.0
+Data: 06/11/2026
+
+SOLICITAÇÃO ATENDIDA
+--------------------
+1. O PWA deve identificar automaticamente Android, iOS, Windows ou outro sistema.
+2. O usuário não deve escolher o sistema operacional manualmente.
+3. Ao acessar o endereço no navegador, deve aparecer apenas a apresentação da rádio
+   e o botão de instalação, com texto profissional.
+4. O aplicativo não deve mais ter menu interno.
+5. O layout deve ficar mais intuitivo, elegante e compacto.
+6. Evitar textos técnicos desnecessários na interface pública.
+
+ALTERAÇÕES IMPLEMENTADAS
+------------------------
+1. index.html
+   - Refeito para duas experiências bem separadas:
+     a) tela pública de instalação;
+     b) tela principal do aplicativo instalado.
+   - Removidos menu interno, tela de informações e tela separada de instalação.
+
+2. landing.js
+   - Agora identifica o sistema pelo navegador:
+     Android, iOS, Windows, Mac, Linux ou outro.
+   - Se o navegador oferecer instalação direta, o botão abre automaticamente
+     a solicitação de instalação.
+   - Se a instalação direta não existir, o app mostra uma orientação simples,
+     já adaptada ao dispositivo detectado.
+   - No iPhone, o fluxo mostra orientação objetiva via Safari, sem o usuário
+     precisar selecionar plataforma.
+
+3. app.js
+   - Mantida a proteção para que a rádio funcione somente no aplicativo aberto.
+   - Interface simplificada: sem menu, sem navegação interna e sem telas extras.
+   - Mantidos streaming, metadados, reconexão automática, VU-meters L/R reais,
+     botão único de ligar/desligar e links de WhatsApp.
+   - Preservada a lógica de reconexão contra quedas de rede e falhas breves.
+
+4. styles.css
+   - Layout totalmente refinado.
+   - Tela principal mais elegante, direta e compacta.
+   - Tela pública com destaque para logo, slogan e instalação.
+   - Ajustes responsivos para manter a experiência sem rolagem.
+
+5. sw.js
+   - Cache atualizado para a nova versão 1.3.0.
+
+RESULTADO FUNCIONAL ESPERADO
+----------------------------
+- Navegador comum:
+  mostra apenas a apresentação da Nativa FM e o botão de instalação.
+- Aplicativo instalado:
+  abre diretamente a rádio com tela única e compacta.
+- Reconexão:
+  continua ativa enquanto a rádio estiver ligada.
+
+LIMITAÇÕES REAIS DA PLATAFORMA
+------------------------------
+- Android e Windows podem aceitar instalação direta por botão, quando o
+  navegador expõe essa capacidade.
+- iPhone / iOS não permite instalação totalmente automática com um toque;
+  por isso, o aplicativo mostra a orientação correta automaticamente.
+- A leitura detalhada dos VU-meters pode depender das permissões do streaming
+  ou do navegador, mas o app nunca simula valores fictícios.
+
+TESTES REALIZADOS NESTE AMBIENTE
+--------------------------------
+- Revisão estrutural completa dos arquivos principais.
+- Verificação da separação entre vitrine de instalação e aplicativo instalado.
+- Conferência da remoção do menu interno.
+- Conferência da lógica de detecção de plataforma no fluxo de instalação.
+- Conferência da manutenção da reconexão automática e do player.
+- Conferência da correção dos textos do WhatsApp.
+
+TESTES RECOMENDADOS AO PUBLICAR
+-------------------------------
+1. Instalar no Android pelo Chrome.
+2. Instalar no iPhone pelo Safari.
+3. Instalar no Windows pelo Edge ou Chrome.
+4. Verificar se o áudio permanece estável com a transmissão real da Zeno.
+5. Testar queda e retorno da internet com a rádio ligada.

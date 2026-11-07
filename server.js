@@ -1,6 +1,6 @@
 'use strict';
 /**
- * Nativa FM PWA 1.3.0 — servidor opcional de mesma origem, sem pacotes npm.
+ * Nativa FM PWA 1.4.0 — servidor opcional de mesma origem, sem pacotes npm.
  * Node.js 20+. Ajuda a garantir Web Audio L/R real independentemente do CORS da Zeno.
  * Acesso local: http://localhost:8080  |  Produção: publique atrás de HTTPS.
  */
@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
   let pathname;
   try { pathname = new URL(req.url, 'http://localhost').pathname; }
   catch (_) {return json(res, 400, {error:'URL inválida.'});}
-  if (pathname === '/api/health') return json(res, 200, {service:'nativa-fm-proxy', ready:true, version:'1.3.0'});
+  if (pathname === '/api/health') return json(res, 200, {service:'nativa-fm-proxy', ready:true, version:'1.4.0'});
   if (pathname === '/api/stream' && method === 'GET') return void proxyStream(res, STREAM, false);
   if (pathname === '/api/metadata' && method === 'GET') return void proxyStream(res, META, true);
   if (pathname.startsWith('/api/')) return json(res, 404, {error:'Rota não encontrada.'});

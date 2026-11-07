@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.3.0 — interface compacta, sem menu, com reconexão automática. */
+/* Nativa FM 1.4.0 — janela compacta e botão verde/vermelho conforme energia. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -71,6 +71,27 @@
   const metadataUrl = `https://api.zeno.fm/mounts/metadata/subscribe/${encodeURIComponent(cfg.zenoMount)}`;
   const whatsapp = `https://wa.me/${cfg.whatsappNumber}?text=`;
 
+  // Ajuste não invasivo: tente dimensionar apenas a janela instalada no
+  // Windows, sem interferir em Android/iPhone e sem mover a janela do usuário.
+  // A decisão final pertence ao Chrome/Edge e ao gerenciador de janelas.
+  function preferCompactWindowsWindow() {
+    if (!/Windows/i.test(navigator.userAgent || '')) return;
+    if (!window.matchMedia?.('(display-mode: standalone)').matches) return;
+    if (document.fullscreenElement) return;
+    if (typeof window.resizeTo !== 'function') return;
+    const availableWidth = screen.availWidth || window.outerWidth;
+    const availableHeight = screen.availHeight || window.outerHeight;
+    // Não interferir em telas muito pequenas.
+    if (availableWidth < 650 || availableHeight < 550) return;
+    const width = Math.min(540, Math.max(360, availableWidth - 36));
+    const height = Math.min(850, Math.max(510, availableHeight - 48));
+    // Evita chamar resizeTo quando a janela já está no tamanho solicitado.
+    if (Math.abs(window.outerWidth - width) <= 4 && Math.abs(window.outerHeight - height) <= 4) return;
+    try { window.resizeTo(width, height); } catch (_) { /* bloqueado pelo navegador */ }
+  }
+  // Uma tentativa ao abrir a PWA; nenhuma ação repetida durante a reprodução.
+  window.addEventListener('load', preferCompactWindowsWindow, {once:true});
+
   ui.requestSong.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de pedir uma música na programação.');
   ui.advertise.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de saber como anunciar com vocês. Podem enviar informações e valores?');
 
@@ -92,16 +113,19 @@
   function setStatus(mode, customMessage = '') {
     ui.badge.className = `on-air-badge ${mode === 'on' ? 'is-on' : mode === 'connecting' ? 'is-connecting' : mode === 'error' ? 'is-error' : 'is-off'}`;
     const map = {
-      on: ['NO AR', 'DESLIGAR RÁDIO', 'Toque para encerrar a transmissão ao vivo.'],
-      connecting: ['CONECTANDO', 'CONECTANDO…', 'Aguarde enquanto a Nativa FM é sintonizada.'],
-      error: ['RECONEXÃO', 'TENTANDO NOVAMENTE', 'A rádio continua tentando restabelecer a transmissão automaticamente.'],
-      off: ['DESLIGADA', 'LIGAR RÁDIO', 'Toque para ouvir a programação ao vivo.']
+      on: ['NO AR', 'Toque para encerrar a transmissão ao vivo.'],
+      connecting: ['CONECTANDO', 'Aguarde enquanto a Nativa FM é sintonizada.'],
+      error: ['RECONEXÃO', 'O aplicativo continua tentando reconectar automaticamente.'],
+      off: ['DESLIGADA', 'Toque para ouvir a programação ao vivo.']
     };
-    const [badge, button, helper] = map[mode] || map.off;
+    const [badge, helper] = map[mode] || map.off;
     ui.badgeText.textContent = badge;
-    ui.powerText.textContent = button;
+    // Verde significa rádio desligada; vermelho significa rádio ligada,
+    // inclusive enquanto conecta ou aguarda reconexão.
+    ui.power.classList.toggle('is-powered', state.desired);
+    ui.powerText.textContent = state.desired ? 'DESLIGAR RÁDIO' : 'LIGAR RÁDIO';
     ui.helper.textContent = customMessage || helper;
-    ui.power.setAttribute('aria-pressed', String(mode === 'on' || mode === 'connecting' || mode === 'error'));
+    ui.power.setAttribute('aria-pressed', String(state.desired));
     ui.wave.classList.toggle('is-active', mode === 'on' || mode === 'connecting');
   }
 

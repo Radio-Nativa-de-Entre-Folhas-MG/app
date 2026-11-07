@@ -171,3 +171,35 @@ html:not([data-pwa-display="standalone"]) #appShell{display:none!important}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* V1.4.0 — [hidden] deve prevalecer inclusive sobre display:flex/grid. */
+[hidden]{display:none!important}
+
+/* Estado de energia claro: verde = rádio desligada; vermelho = rádio ligada. */
+.power-button{transition:background-color .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease}
+.power-button.is-powered{
+  background:linear-gradient(115deg,#ffb0a8 0%,#ff7370 48%,#ed3f49 100%);
+  border-color:#ffc3bc;
+  color:#3a0c13;
+  box-shadow:0 12px 26px rgba(237,63,73,.26)
+}
+.power-button.is-powered:focus-visible{outline:3px solid #fff2b8;outline-offset:2px}
+.power-button:not(.is-powered):focus-visible{outline:3px solid #e1ffe6;outline-offset:2px}
+
+/* Telefones com altura muito reduzida: preservar energia, VU e contatos. */
+@media (max-height:540px){
+  .app-shell{gap:5px}
+  .home-screen{gap:5px}
+  .hero-logo{height:min(11dvh,20vw,76px)}
+  .hero{gap:1px;padding-top:0}
+  .card-header{margin-bottom:4px}
+  .now-card,.meter-card{padding:7px 9px}
+  .now-content{gap:7px}
+  .music-icon{height:31px;width:31px}
+  .now-title{font-size:13px}
+  .now-artist{font-size:10px}
+  .meter-scale{margin-bottom:4px}
+  .meter-row{margin-top:3px}
+  .status-card{display:none}
+  .playback-helper{min-height:12px}
+}

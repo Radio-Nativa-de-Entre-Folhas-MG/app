@@ -1,5 +1,5 @@
 NATIVA FM 98.7 — O AMOR DE ENTRE FOLHAS
-PWA VERTICAL — VERSÃO 1.3.0
+PWA VERTICAL — VERSÃO 1.4.0
 ========================================
 
 VISÃO GERAL
@@ -28,6 +28,12 @@ FUNÇÕES PRINCIPAIS
 - Aplicativo instalado com tela principal única, sem menu e sem rolagem.
 - Logotipo da rádio, slogan, metadados, VU-meter L/R, botão liga/desliga.
 - Botões de WhatsApp: Pedir música e Anuncie com a gente.
+- Botão LIGAR RÁDIO em verde (rádio desligada); ao ligar, ele fica vermelho
+  e mostra DESLIGAR RÁDIO. Permanece vermelho durante reconexões,
+  para permitir interromper a reprodução a qualquer momento.
+- Windows: quando aberto como aplicativo instalado, faz uma tentativa
+  de ajustar a janela para aproximadamente 540 x 850 pixels. O navegador
+  pode bloquear ou limitar o ajuste. Não altera janelas comuns do site.
 - Reconexão automática quando o sinal cair ou a internet falhar, enquanto a
   rádio permanecer ligada.
 - Medição real RMS em dBFS dos canais esquerdo e direito, quando o navegador
@@ -43,6 +49,8 @@ O comportamento varia conforme o sistema:
 - Outros sistemas: o app mostra a orientação mais adequada disponível.
 
 Ou seja: o usuário não precisa escolher o sistema operacional manualmente.
+O endereço do site mostra apenas a apresentação da rádio e o botão
+INSTALAR APLICATIVO, sem caixas de ajuda abertas automaticamente.
 
 EXECUTAR LOCALMENTE
 -------------------
@@ -93,3 +101,29 @@ O navegador comum não deve ser usado para ouvir a rádio. O uso é feito pelo
 aplicativo instalado. Os testes de lógica foram realizados neste ambiente, mas
 é recomendável validar a instalação e o streaming real em Android, iPhone e
 Windows antes da distribuição final.
+
+
+JANELA DO WINDOWS
+-----------------
+O modo de aplicativo da PWA é "standalone". Ao abrir a Nativa FM instalada
+no Chrome/Edge do Windows, o código tenta ajustar a janela para um tamanho
+vertical de aproximadamente 540 x 850 pixels, respeitando monitores menores.
+Se o Chrome/Edge ignorar a tentativa, ajuste a janela manualmente uma vez:
+em geral o navegador guarda o último tamanho utilizado na próxima abertura.
+Não há configuração padronizada no manifesto PWA capaz de obrigar um
+navegador a fixar tamanho e posição da janela em todos os computadores.
+
+CORREÇÃO DO BOTÃO DE INSTALAÇÃO
+------------------------------
+O antigo painel que aparecia com "Tentar novamente" e "Fechar" foi
+removido. Quando a instalação nativa não estiver disponível, instruções
+curtas aparecem abaixo do botão principal, sem abrir outra tela.
+
+VALIDAÇÃO V1.4.0
+----------------
+- HTML, CSS e JS examinados e sintaxe JS conferida.
+- Testes em navegador de desenvolvimento com conteúdo injetado, sem
+  navegação de rede: tela inicial, mudança de cor do botão e encaixe dos
+  elementos a 320x480, 360x640, 390x844 e 540x850.
+- Player e estados testados com áudio simulado. Ainda não houve teste
+  no Windows instalado ou com o streaming real da Zeno nesta versão.

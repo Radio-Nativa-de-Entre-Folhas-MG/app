@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title Nativa FM 1.9.0 - PWA
+title Nativa FM 1.9.1 - PWA
 cd /d "%~dp0"
 where node >nul 2>nul
 if errorlevel 1 (
@@ -25,11 +25,11 @@ if not errorlevel 1 (
 
 echo.
 echo ===================================================
-echo NATIVA FM - PROJETO ATUALIZADO - VERSAO 1.9.0
+echo NATIVA FM - PROJETO ATUALIZADO - VERSAO 1.9.1
 echo ===================================================
 echo Pasta: %~dp0
 echo Quando aparecer a confirmacao abaixo, abra:
-echo http://localhost:8080/?v=1.9.0
+echo http://localhost:8080/?v=1.9.1
 echo.
 node server.js
 if errorlevel 1 pause

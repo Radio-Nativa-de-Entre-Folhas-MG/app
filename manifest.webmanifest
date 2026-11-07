@@ -4,7 +4,7 @@
   "short_name": "Nativa FM",
   "description": "Instale o aplicativo Nativa FM 98.7, o amor de Entre Folhas, e ouça a programação ao vivo.",
   "lang": "pt-BR",
-  "start_url": "./?v=1.9.0",
+  "start_url": "./?v=1.9.1",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

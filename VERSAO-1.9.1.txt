@@ -1,0 +1,6 @@
+NATIVA FM PWA — BUILD 1.9.1
+
+Alteração: reprodução automática ao abrir a PWA instalada.
+Interface: idêntica à versão 1.9.0.
+Identificação servidor: /api/health informa version 1.9.1.
+Regras de autoplay do navegador podem exigir um toque inicial.

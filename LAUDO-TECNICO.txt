@@ -1,4 +1,4 @@
-LAUDO TÉCNICO — NATIVA FM PWA 1.9.0
+LAUDO TÉCNICO — NATIVA FM PWA 1.9.1
 =================================
 
 MOTIVO
@@ -19,11 +19,11 @@ ALTERAÇÕES CONFIRMADAS
 5. Análise de frequência: normalização dinâmica do espectro real,
    contraste local entre bandas adjacentes, ataque de 9 ms e liberação
    de 92 ms, com supressão de silêncio. As alturas não são aleatórias.
-6. Cache: novos nomes e URLs versionadas ?v=1.9.0, service worker
-   nativa-fm-v1.9.0 e limpeza apenas de caches antigos da Nativa FM.
+6. Cache: novos nomes e URLs versionadas ?v=1.9.1, service worker
+   nativa-fm-v1.9.1 e limpeza apenas de caches antigos da Nativa FM.
 7. Windows: inicializador alerta se a porta 8080 estiver ocupada para
    evitar que a versão antiga seja aberta sem perceber.
-8. Servidor: rota /api/health informa version 1.9.0 e novo SVG é servido.
+8. Servidor: rota /api/health informa version 1.9.1 e novo SVG é servido.
 9. Mantidos: streaming Zeno, EventSource de metadados, WhatsApp,
    botão único, reconexão, instalação e disposição sem rolagem.
 
@@ -47,3 +47,16 @@ PENDÊNCIAS / LIMITAÇÕES
 - A disponibilidade de análise de áudio depende do navegador e de CORS,
   ou do proxy Node.js fornecido no pacote.
 - Controle de dimensões da janela Windows pode ser recusado pelo navegador.
+
+
+ADENDO V1.9.1 — INICIALIZAÇÃO AUTOMÁTICA
+----------------------------------------
+- app.js: inicia em estado CONECTANDO ao abrir a PWA instalada; botão passa a
+  DESLIGAR RÁDIO sem clique. Após a verificação de proxy, abre o streaming.
+- Se desligar antes da verificação terminar, nenhum streaming será aberto.
+- Mantidos o desligamento manual, tratamento de falhas, equalizador, metadados
+  e layout sem qualquer alteração visual.
+- Se o SO bloquear autoplay, mantém opção de ativação por toque, sem prometer
+  reproduzir som quando o navegador proíbe.
+- sw.js/index.html/manifest: cache e URLs atualizados para versão 1.9.1.
+- Teste de reprodução ao vivo no dispositivo ainda necessário.

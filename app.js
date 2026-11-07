@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.9.0 — equalizador radial com espectro dinâmico e neon aprovado. */
+/* Nativa FM 1.9.1 — inicialização automática; visual 1.9.0 preservado. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -558,8 +558,8 @@
           discardAudio();
           state.desired = false;
           state.playing = false;
-          setStatus('off', 'Toque novamente para ouvir a Nativa FM.');
-          setConnectionInfo('A reprodução foi bloqueada momentaneamente. Toque em ligar para tentar outra vez.');
+          setStatus('off', 'Toque em LIGAR RÁDIO para autorizar o áudio neste dispositivo.');
+          setConnectionInfo('O dispositivo exige um toque para permitir a reprodução de áudio.');
           resetMeters('Reprodução bloqueada pelo sistema neste momento.');
         } else {
           maybeFallback('Falha ao iniciar o áudio', state.currentHadAudio);
@@ -686,10 +686,14 @@
     }
   }
 
+  // A interface instalada começa em CONECTANDO, sem exigir clique.
+  // Aguarda apenas a verificação rápida do proxy para priorizar o streaming
+  // na mesma origem (o equalizador continua com análise de áudio real).
+  // Se o usuário desligar enquanto isso acontece, a conexão não será aberta.
   detectProxy().then((ready) => {
     state.proxy = ready;
     startMetadata();
-    if (!state.desired && ready) resetMeters('Aplicativo pronto para medir áudio em tempo real.');
+    if (state.desired && !state.audio && !state.retryTimer) connectStream();
   });
 
   window.addEventListener('online', () => {
@@ -715,11 +719,16 @@
   });
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.9.0').catch((error) => console.warn('Service Worker:', error)));
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.9.1').catch((error) => console.warn('Service Worker:', error)));
   }
 
-  setStatus('off');
-  setConnectionInfo('Rádio desligada.');
-  resetMeters('Inicie a rádio para medir o áudio em tempo real.');
+  // Inicialização automática SOMENTE na PWA instalada. Na página pública
+  // de instalação, o app.js sai no início e nenhuma reprodução é iniciada.
+  // O estado desejado é ligado desde a primeira pintura: o botão fica vermelho
+  // e já permite DESLIGAR, inclusive durante a verificação inicial da rede.
+  state.desired = true;
+  setStatus('connecting', 'Sintonizando a Nativa FM automaticamente…');
+  setConnectionInfo('Conectando à programação ao vivo.');
+  resetMeters('Preparando o equalizador.');
   updateMediaSession();
 })();

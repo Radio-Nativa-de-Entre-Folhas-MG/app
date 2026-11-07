@@ -1,4 +1,4 @@
-NATIVA FM 98.7 — PWA OFICIAL — VERSÃO 1.9.0
+NATIVA FM 98.7 — PWA OFICIAL — VERSÃO 1.9.1
 ==========================================
 O amor de Entre Folhas.
 
@@ -23,9 +23,9 @@ INSTALAÇÃO E EXECUÇÃO NO WINDOWS
 2. Extraia o ZIP inteiro em uma pasta NOVA.
 3. Instale Node.js 20 ou mais recente, se necessário.
 4. Execute INICIAR-WINDOWS.bat.
-5. Abra no Chrome ou Edge: http://localhost:8080/?v=1.9.0
+5. Abra no Chrome ou Edge: http://localhost:8080/?v=1.9.1
 6. Clique em INSTALAR APLICATIVO e abra a Nativa FM pelo ícone instalado.
-7. LIGAR RÁDIO inicia o streaming; DESLIGAR RÁDIO para totalmente.
+7. A rádio inicia automaticamente ao abrir o aplicativo instalado; DESLIGAR RÁDIO interrompe totalmente.
 
 SE A PWA ANTIGA CONTINUAR APARECENDO
 ----------------------------------
@@ -34,12 +34,12 @@ SE A PWA ANTIGA CONTINUAR APARECENDO
 - Visite novamente o site da rádio no navegador, conectado à internet,
   para permitir a atualização dos arquivos e do cache.
 - Se persistir, desinstale a PWA antiga e instale novamente a versão nova.
-- A versão do servidor pode ser conferida em /api/health (version 1.9.0).
+- A versão do servidor pode ser conferida em /api/health (version 1.9.1).
 
 ANDROID / IPHONE / WINDOWS
 -------------------------
 Ao abrir no navegador, a rádio exibe somente a vitrine de instalação.
-Dentro do aplicativo instalado, a rádio abre em uma tela única e compacta.
+Dentro do aplicativo instalado, a rádio abre em uma tela única e compacta e tenta reproduzir automaticamente.
 A instalação automática com um toque depende do navegador. No iPhone,
 o app identifica o dispositivo e explica como adicionar à Tela de Início.
 Para publicação no celular, hospede o projeto em domínio HTTPS.
@@ -98,3 +98,23 @@ As capturas do equalizador usam um sinal sintético para testar frequências,
 sem representar uma música da rádio. O comportamento real do streaming Zeno,
 a instalação nos sistemas e a execução contínua em segundo plano ainda
 precisam de validação nos dispositivos dos ouvintes.
+
+
+AUTOINÍCIO DA RÁDIO (NOVO NA V1.9.1)
+------------------------------------
+Ao abrir o aplicativo instalado (modo standalone), o botão muda para
+DESLIGAR RÁDIO e a conexão com a transmissão começa automaticamente.
+Isso ocorre uma vez por abertura da PWA. A espera inicial da verificação do
+servidor auxiliar leva até 2 segundos. Se o usuário desligar durante essa
+verificação, a rádio NÃO será ligada novamente por conta própria.
+
+Regras de reprodução de áudio do navegador:
+- Chrome/Edge e outros navegadores podem permitir a reprodução automática
+  em uma PWA instalada, conforme as políticas do dispositivo.
+- Safari/iPhone e alguns Androids podem exigir um toque inicial para liberar
+  áudio. Nesse caso, o app informa isso e volta a exibir LIGAR RÁDIO.
+- O aplicativo não tenta burlar a proteção de reprodução automática.
+- Após a reprodução começar, quedas de rede seguem a reconexão já existente.
+- DESLIGAR RÁDIO cancela a conexão e as tentativas de reconectar.
+
+O layout e os recursos visuais da V1.9.0 foram mantidos integralmente.

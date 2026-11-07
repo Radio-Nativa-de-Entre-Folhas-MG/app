@@ -1,0 +1,21 @@
+NATIVA FM PWA V1.9.1 — TESTES DE AUTOINÍCIO
+===========================================
+Todos os testes a seguir foram realizados usando a aplicação JavaScript
+em um navegador Chromium com classes de áudio simuladas. Eles não são
+uma validação de playback da Zeno em dispositivo real.
+
+1. Abertura da PWA instalada: iniciou automaticamente um Audio e chamou play(). PASSOU.
+2. Botão passou para DESLIGAR RÁDIO e estado NO AR após evento playing. PASSOU.
+3. Desligar manualmente cancelou áudio sem reconexão inesperada. PASSOU.
+4. Rejeição NotAllowedError (autoplay bloqueado): mostrou LIGAR RÁDIO
+   e um toque de recuperação iniciou a reprodução. PASSOU.
+5. Desligamento durante a verificação do servidor: NÃO criou áudio
+   após retorno da verificação. PASSOU.
+6. Acesso pelo navegador normal: player não iniciou. PASSOU.
+7. CSS, logotipo original, fundo neon e ícone de WhatsApp são
+   byte a byte idênticos aos arquivos da versão 1.9.0. PASSOU.
+8. Verificação sintática de app.js, landing.js, sw.js e server.js: PASSOU.
+9. HTTP /api/health da versão 1.9.1: PASSOU.
+
+PENDENTE: testar a reprodução real no Chrome/Edge Windows, Chrome Android
+ e Safari iOS. Políticas de autoplay variam por navegador e sistema.

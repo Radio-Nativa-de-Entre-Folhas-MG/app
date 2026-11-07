@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1080" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#00e924" stop-opacity=".04"/><stop offset=".12" stop-color="#72ff25"/><stop offset=".45" stop-color="#00da26" stop-opacity=".48"/><stop offset=".77" stop-color="#83ff36"/><stop offset="1" stop-color="#00b41a" stop-opacity=".02"/></linearGradient>
+  <linearGradient id="lime" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#99ff2d" stop-opacity="0"/><stop offset=".48" stop-color="#44ff18"/><stop offset="1" stop-color="#16be26" stop-opacity=".05"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="11"/></filter>
+  <filter id="soft"><feGaussianBlur stdDeviation="24"/></filter>
+  <radialGradient id="pool"><stop stop-color="#29dc28" stop-opacity=".25"/><stop offset="1" stop-color="#06a627" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="510" cy="515" rx="565" ry="405" fill="url(#pool)"/>
+<!-- Sweeping ribbons at the upper left and right: behind the radio mark -->
+<g fill="none" stroke-linecap="round">
+<path d="M-150 470 C60 85 160 120 365 92 C590 56 675 195 1140 -22" stroke="#3aff19" stroke-width="38" opacity=".23" filter="url(#soft)"/>
+<path d="M-95 423 C57 148 161 148 340 125 C588 92 743 147 1105 0" stroke="url(#emerald)" stroke-width="16" opacity=".75" filter="url(#glow)"/>
+<path d="M-105 420 C64 146 159 143 352 121 C598 99 748 137 1083 4" stroke="#5cff23" stroke-width="3.1" opacity=".86"/>
+<path d="M-119 450 C83 179 206 172 360 141 C631 88 805 185 1122 -12" stroke="#30ea15" stroke-width="2" opacity=".44"/>
+<path d="M-145 486 C67 191 192 182 389 155 C642 120 781 215 1115 30" stroke="#74ff27" stroke-width="1.4" opacity=".36"/>
+<!-- Lower ribbon wraps the circle and sweeps upward on both sides -->
+<path d="M-154 718 C146 1037 369 914 584 948 C767 957 918 768 1167 556" stroke="#43ff29" stroke-width="40" opacity=".25" filter="url(#soft)"/>
+<path d="M-126 712 C154 1024 360 893 595 921 C762 941 931 751 1142 559" stroke="url(#emerald)" stroke-width="14" opacity=".90" filter="url(#glow)"/>
+<path d="M-126 704 C146 1015 352 888 595 921 C770 938 922 747 1142 554" stroke="#79ff2b" stroke-width="3.5" opacity=".92"/>
+<path d="M-137 678 C121 960 342 868 600 899 C793 902 960 722 1165 531" stroke="#22f330" stroke-width="2.4" opacity=".5"/>
+<path d="M-135 740 C121 1002 356 949 578 965 C801 975 991 778 1190 588" stroke="#59ff29" stroke-width="1.8" opacity=".50"/>
+<path d="M-137 779 C161 1050 414 982 566 981 C815 1009 989 803 1147 635" stroke="#35f72c" stroke-width="1.2" opacity=".30"/>
+</g>
+</svg>

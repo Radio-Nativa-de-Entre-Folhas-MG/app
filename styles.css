@@ -137,3 +137,76 @@ html:not([data-pwa-display="standalone"]) #appShell{display:none!important}
  .app-shell{height:calc(100dvh - 20px);margin-top:10px;border:1px solid #225a32;border-radius:24px;box-shadow:0 20px 65px #0009}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+
+/* NATIVA FM 1.9.0 — INTERFACE NEON PREMIUM RECONSTRUÍDA */
+.app-shell{
+ background:radial-gradient(ellipse 120% 58% at 50% 45%,rgba(0,111,25,.30),transparent 75%),
+ linear-gradient(180deg,#010a05 0%,#021007 50%,#010804 100%);
+}
+.topbar{
+ border:1.5px solid rgba(77,255,82,.72);
+ background:linear-gradient(95deg,#063315 0%,#04180d 63%,#021308 100%);
+ box-shadow:inset 0 1px 1px rgba(188,255,178,.27),0 0 14px rgba(34,255,73,.28),0 0 32px rgba(0,87,23,.28);
+}
+.brand-mark{border:1.5px solid #b6ff9c;box-shadow:0 0 8px rgba(197,255,127,.83),0 0 23px rgba(60,255,41,.48)}
+.brand-divider{background:linear-gradient(transparent,#aeff3e,#75ff4b,transparent)}
+.on-air-badge.is-on{border-color:#a2ff4d;box-shadow:0 0 6px #87ff45,0 0 20px #65ff4869,inset 0 0 7px #32ff451c}
+.hero{isolation:isolate}
+.visual-stage{isolation:isolate;overflow:visible}
+.neon-background{
+ position:absolute;display:block;pointer-events:none;z-index:0;
+ left:-12%;width:124%;top:-8%;height:109%;max-width:none;
+ opacity:1;object-fit:fill;filter:drop-shadow(0 0 8px rgba(52,255,32,.36));
+}
+.visual-atmosphere{
+ position:absolute;z-index:0;inset:0 -5%;filter:blur(17px);opacity:.9;
+ background:radial-gradient(ellipse 28% 30% at 3% 33%,rgba(7,239,42,.37),transparent 92%),
+ radial-gradient(ellipse 35% 26% at 97% 66%,rgba(16,240,51,.37),transparent 92%),
+ radial-gradient(ellipse 57% 58% at 50% 47%,rgba(0,68,15,.43),transparent 98%);
+}
+.radial-visualizer{z-index:1;filter:drop-shadow(0 0 10px #03c4211f)}
+.logo-orbit{
+ width:60%;border:2px solid #a5ff49;
+ background:radial-gradient(circle at 50% 46%,#50fc21,#0baf18 63%,#057f13 95%);
+ box-shadow:0 0 0 3px #0c6318ce,0 0 10px #c6ff7c,0 0 21px #65ff29bd,0 0 48px #0dff3477,inset 0 0 11px #c6ff60;
+}
+.logo-orbit:before{inset:-5px;opacity:1;border-color:#e0ffa1;box-shadow:0 0 12px #90ff33a3}
+.hero-logo{filter:contrast(1.10) saturate(1.12)}
+.hero-text{z-index:2}
+.frequency{font-weight:990;text-shadow:0 2px 9px #000,0 0 7px #f9fff42b}
+.frequency span{text-shadow:0 0 13px #68ff47c4}
+.hero h1{color:#f0fff2;font-weight:540;text-shadow:0 0 10px #000,0 0 5px #ecffea45}
+.frequency-decoration i{background:#58ff18;box-shadow:0 0 6px #80ff3a,0 0 14px #36ff1b78}
+.now-card{
+ border:1.8px solid #78ff3f;
+ background:linear-gradient(115deg,#063015 0%,#031e0d 56%,#021108 100%);
+ box-shadow:0 0 8px #52ff36a8,0 0 24px #31ff3349,inset 0 0 16px #19dd2f1b,0 1px 0 #c1ffa874;
+}
+.music-icon{
+ position:relative;overflow:hidden;isolation:isolate;
+ background:linear-gradient(145deg,#b0fa21 0%,#3ffa22 20%,#07bd38 63%,#006b35 100%);
+ color:#fff;border:1px solid #caff67;
+ box-shadow:inset 0 1px 5px #ecff8a5c,inset 0 -7px 13px #003c2066,0 0 12px #29ff437b;
+}
+.music-icon:before{
+ content:"";position:absolute;pointer-events:none;inset:23% -20% -31% -15%;z-index:0;opacity:.6;
+ background:repeating-radial-gradient(ellipse 52% 19% at 40% 100%,transparent 0 4px,rgba(158,255,119,.42) 5px 5.8px,transparent 7px 10px);
+}
+.music-icon:after{display:none!important}
+.music-icon svg{position:relative;z-index:2;display:block;width:64%;height:64%;fill:#fff!important;opacity:1!important;filter:drop-shadow(0 1px 1px rgba(0,28,11,.7))!important}
+.now-divider{background:linear-gradient(transparent,#b7ff32 12%,#57ff2a 70%,transparent);box-shadow:0 0 9px #46ff26c6}
+.now-label{color:#c2ff39;text-shadow:0 0 6px #a4ff4633}
+.now-wave i{box-shadow:0 0 8px #68ff3199}
+.contact-action{
+ border:1.5px solid #75ff48;
+ background:linear-gradient(135deg,#0b4e21 0%,#06401b 58%,#006525 100%);
+ box-shadow:inset 0 1px 4px #b9ff6c30,0 0 10px #38ff35a0,0 0 18px #01bc2957;
+}
+.contact-action img{filter:brightness(1.15) drop-shadow(0 0 3px #5aff7799)}
+.power-button.is-powered{
+ background:linear-gradient(180deg,#ff343a 0%,#e10916 25%,#a10008 67%,#630007 100%);
+ border-color:#ff7a6e;
+ box-shadow:inset 0 2px 14px #ffb5a672,inset 0 -8px 16px #130006,0 0 16px #ff2429ca,0 0 36px #fe081f78;
+}
+@media(max-height:530px){.neon-background{top:-7%;height:105%;}}

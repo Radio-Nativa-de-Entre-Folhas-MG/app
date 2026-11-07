@@ -1,66 +1,49 @@
-NATIVA FM — LAUDO TÉCNICO V1.7.1
-Data: 07/11/2026
+LAUDO TÉCNICO — NATIVA FM PWA 1.9.0
+=================================
 
-OBJETIVO
---------
-Recriar a interface aprovada pelo usuário, inspirada na imagem conceitual
-Nativa FM neon, com o logotipo original dentro de um equalizador circular
-responsivo por frequências, preservando o funcionamento da PWA.
+MOTIVO
+------
+O usuário identificou que o pacote 1.8.0 ainda parecia a versão anterior.
+Este pacote altera de forma expressiva o desenho funcional, a atualização
+de recursos e a identificação da versão carregada.
 
-ALTERAÇÕES PRINCIPAIS
+ALTERAÇÕES CONFIRMADAS
+---------------------
+1. HTML: adicionada camada própria de ondas neon, posicionada atrás do
+   Canvas de análise; nota musical reescrita em SVG branco nítido.
+2. CSS: redefinidos fundo neon, aro, iluminação, cartões, botões e cabeçalho.
+   Ondas não atravessam o título da frequência.
+3. SVG: novo assets/neon-waves-v2.svg, de curvas intensas e múltiplos brilhos.
+4. Canvas: 24 barras largas. Largura interna ampliada, altura máxima
+   aumentada, brilho externo reforçado.
+5. Análise de frequência: normalização dinâmica do espectro real,
+   contraste local entre bandas adjacentes, ataque de 9 ms e liberação
+   de 92 ms, com supressão de silêncio. As alturas não são aleatórias.
+6. Cache: novos nomes e URLs versionadas ?v=1.9.0, service worker
+   nativa-fm-v1.9.0 e limpeza apenas de caches antigos da Nativa FM.
+7. Windows: inicializador alerta se a porta 8080 estiver ocupada para
+   evitar que a versão antiga seja aberta sem perceber.
+8. Servidor: rota /api/health informa version 1.9.0 e novo SVG é servido.
+9. Mantidos: streaming Zeno, EventSource de metadados, WhatsApp,
+   botão único, reconexão, instalação e disposição sem rolagem.
+
+VALIDAÇÕES EFETUADAS
 --------------------
-- index.html: tela principal refeita; logo original ao centro de um painel
-  circular; cabeçalho luminoso, selo NO AR, 98.7 FM, slogan, metadados,
-  WhatsApp e botão ligar/desligar no rodapé.
-- styles.css: identidade verde/neon, fundo escuro, cartões com borda luminosa,
-  botão verde/desligado e vermelho/ligado; tamanho responsivo sem rolagem.
-- app.js: Web Audio Analyser FFT (4096 amostras), 48 bandas logarítmicas entre
-  50 Hz e 16 kHz ou limite permitido pela amostragem; Canvas 2D com 13
-  segmentos coloridos por coluna e níveis independentes.
-- A suavização agora usa aproximadamente 16 ms de ataque e 110 ms de queda.
-  O visualizador não anima artificialmente quando não há sinal de áudio.
-- mantidos: streaming Zeno, metadados SSE, reconexão, botão único,
-  WhatsApp codificado, logo original, gate de instalação e suporte PWA.
-- cache do Service Worker e integridade do server.js versionados em 1.7.1.
+- Sintaxe do JavaScript e JSON do manifesto.
+- Cinco resoluções: 390×844, 540×850, 320×568, 320×480, 430×932.
+- Botão ligado e desligado em navegador de testes com áudio sintético.
+- Renderização de barras de frequências e nenhum controle cortado.
+- Vitrine pública exibida sem o player na página comum do navegador.
+- Rota HTTP e recursos estáticos do servidor Node.js.
+- Hashes SHA-256 e integridade do ZIP.
 
-NOTAS IMPORTANTES
------------------
-A imagem original é um conceito estático; a interface foi RECONSTRUÍDA com
-componentes HTML/CSS/Canvas funcionais, para ficar visualmente próxima sem
-transformar o app inteiro numa imagem. Pequenas variações de tipografia,
-tamanhos e sombras ocorrem em sistemas, telas e navegadores diferentes.
-Na presença de áudio real, cada banda reage ao espectro capturado. Os
-níveis não são valores de medição calibrada em LUFS nem VU analógico.
-Na ausência de acesso ao áudio bruto, o player pode continuar reproduzindo
-em modo compatível, mas o espectro permanecerá parado, sem simulação.
-O iPhone requer o fluxo permitido pelo Safari para adicionar a PWA.
-
-TESTES EVIDENCIADOS
--------------------
-- Código JavaScript verificado por node --check.
-- Testes de navegador automatizados com áudio sintético: abrir PWA simulada,
-  ligar/desligar rádio e gerar movimento do visualizador com energia por
-  frequência; sem erros de JavaScript.
-- Layout conferido em capturas de 390x844, 540x850, 320x568 e 320x480.
-- Conferir antes da distribuição: instalação real no Android/iOS/Windows,
-  streaming ao vivo, metadados e recuperação após queda física da internet.
-- Teste local HTTP realizado com Node.js em porta alternativa: HTML, CSS,
-  scripts, manifesto, ícones e /api/health responderam HTTP 200.
-- A automação Chromium bloqueou endereços locais por política do ambiente;
-  por isso a renderização e interação visual foram validadas por HTML/CSS/JS
-  injetados em página de testes, não pelo servidor local dentro do Chromium.
-- Fluxo público de instalação validado nesse ambiente de testes: botão
-  INSTALAR APLICATIVO presente e sem modal com FECHAR/TENTAR NOVAMENTE.
-
-AJUSTE EXCLUSIVO V1.7.1
------------------------
-- Redução de 72 para 48 barras radiais (redução de 33,3% na quantidade).
-- Espessura relativa alterada de 1,16% para 2,9% do diâmetro do visualizador (2,5 vezes).
-- Mesmas 13 divisões por barra, mesma distribuição de cores e mesmo processamento FFT.
-- Bandas de frequência recalculadas automaticamente para a nova quantidade.
-- Layout e ações do aplicativo preservados; alterações pontuais e incrementais.
-- Testes locais com áudio simulado: 390×844, 540×850, 320×568 e 320×480.
-- Botão liga/desliga e visualizador de 48 bandas verificados sem erros JavaScript.
-- Página pública de instalação verificada em renderização separada.
-- Teste HTTP: servidor local respondeu 200 para a página; o navegador do ambiente bloqueou a navegação direta ao localhost.
-- Testes com áudio simulado e inspeção visual são validação local, não prova de reprodução real da Zeno.
+PENDÊNCIAS / LIMITAÇÕES
+----------------------
+- A referência artística é uma imagem conceitual; um navegador PWA não
+  replica a moldura do hardware nem os relógios/ícones do sistema operacional.
+  A interface interna foi reproduzida com componentes funcionais.
+- O áudio real da Zeno e a instalação em Android / iOS / Windows devem ser
+  testados nos dispositivos finais. O teste em navegador usou áudio sintético.
+- A disponibilidade de análise de áudio depende do navegador e de CORS,
+  ou do proxy Node.js fornecido no pacote.
+- Controle de dimensões da janela Windows pode ser recusado pelo navegador.

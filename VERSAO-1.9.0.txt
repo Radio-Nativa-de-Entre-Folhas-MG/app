@@ -1,0 +1,11 @@
+NATIVA FM PWA — BUILD 1.9.0
+=================================
+Este pacote contém a versão ATUALIZADA com o novo equalizador radial,
+novo fundo neon e novo ícone musical, NÃO a versão 1.8.0.
+
+Identificação técnica: http://localhost:8080/api/health
+Resposta esperada: "version":"1.9.0"
+
+Se você abrir a rádio e continuar vendo a interface antiga,
+feche o servidor Node.js anterior antes de executar este pacote.
+Os arquivos também possuem URLs de versão ?v=1.9.0 para atualização do cache.

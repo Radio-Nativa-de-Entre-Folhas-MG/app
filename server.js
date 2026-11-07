@@ -16,7 +16,7 @@ const STREAM = 'https://stream.zeno.fm/6lsfodimfbztv';
 const META = 'https://api.zeno.fm/mounts/metadata/subscribe/6lsfodimfbztv';
 const STATIC = new Set([
   '/index.html', '/styles.css', '/gate.js', '/landing.js', '/app.js', '/config.js', '/sw.js', '/manifest.webmanifest',
-  '/assets/nativa-fm-original.png', '/assets/whatsapp.svg',
+  '/assets/nativa-fm-original.png', '/assets/whatsapp.svg', '/assets/neon-waves-v2.svg',
   '/icons/icon-192.png', '/icons/icon-512.png', '/icons/icon-maskable-512.png',
   '/icons/apple-touch-icon.png', '/icons/favicon-64.png'
 ]);
@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
   let pathname;
   try { pathname = new URL(req.url, 'http://localhost').pathname; }
   catch (_) {return json(res, 400, {error:'URL inválida.'});}
-  if (pathname === '/api/health') return json(res, 200, {service:'nativa-fm-proxy', ready:true, version:'1.7.1'});
+  if (pathname === '/api/health') return json(res, 200, {service:'nativa-fm-proxy', ready:true, version:'1.9.0'});
   if (pathname === '/api/stream' && method === 'GET') return void proxyStream(res, STREAM, false);
   if (pathname === '/api/metadata' && method === 'GET') return void proxyStream(res, META, true);
   if (pathname.startsWith('/api/')) return json(res, 404, {error:'Rota não encontrada.'});
@@ -103,4 +103,15 @@ server.listen(PORT, HOST, () => {
   console.log(`\n Nativa FM PWA pronta: http://localhost:${PORT}`);
   console.log(' Streaming e metadados pela própria origem.');
   console.log(' Em produção, configure domínio + HTTPS.\n');
+});
+
+// Evita abrir a versao antiga por engano quando a porta estiver ocupada.
+server.on('error', (error) => {
+  if (error?.code === 'EADDRINUSE') {
+    console.error('PORTA 8080 OCUPADA: feche o servidor da versão anterior e execute novamente a Nativa FM 1.9.0.');
+    process.exitCode = 2;
+    return;
+  }
+  console.error('Não foi possível iniciar o servidor:', error);
+  process.exitCode = 1;
 });

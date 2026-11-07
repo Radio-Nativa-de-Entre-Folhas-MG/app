@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.7.1 — equalizador circular com barras largas, fiel à referência visual. */
+/* Nativa FM 1.9.0 — equalizador radial com espectro dinâmico e neon aprovado. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -49,7 +49,7 @@
     analyser: null,
     frequencyData: null,
     raf: 0,
-    levels: new Float32Array(48),
+    levels: new Float32Array(24),
     lastMeterFrame: 0,
     frequencyRanges: [],
     metadata: null,
@@ -58,9 +58,9 @@
     progressEvents: 0
   };
 
-  const BANDS = 48;
-  const ATTACK_MS = 16;
-  const RELEASE_MS = 110;
+  const BANDS = 24;
+  const ATTACK_MS = 9;
+  const RELEASE_MS = 92;
   const radialCtx = ui.equalizer.getContext('2d', {alpha: true});
   let canvasSize = 0;
   const TWO_PI = 2 * Math.PI;
@@ -102,39 +102,60 @@
     drawSpectrum();
   }
 
+  // Cada coluna radial usa uma faixa distinta do espectro de frequências.
+  // As alturas dependem de energia real, não de uma sequência decorativa pré-definida.
   function drawSpectrum() {
     if (!radialCtx || canvasSize < 2) return;
     const c = canvasSize / 2;
-    const radius = canvasSize * .307;
-    const segmentLength = canvasSize * .0105;
-    const segmentGap = canvasSize * .004;
-    // Proporções da referência aprovada: menos colunas e segmentos mais largos.
-    // Mantém espaçamento uniforme entre as barras, independentemente do tamanho da tela.
-    const barWidth = Math.max(1.6, canvasSize * .029);
-    const segmentsPerBar = 13;
+    const radius = canvasSize * .322;
+    const widthInside = canvasSize * .062;
+    const widthOutside = canvasSize * .074;
+    const minLit = canvasSize * .023;
+    const maxExtension = canvasSize * .150;
     radialCtx.clearRect(0, 0, canvasSize, canvasSize);
+    const hasSpectrum = state.playing && state.analyser && state.levels.some(v => v > .04);
+
+    // Brilho do aro é discreto e não se sobrepõe ao logotipo central.
+    radialCtx.save();
+    radialCtx.translate(c, c);
+    radialCtx.beginPath();
+    radialCtx.arc(0, 0, radius - canvasSize * .008, 0, TWO_PI);
+    radialCtx.lineWidth = Math.max(1, canvasSize * .004);
+    radialCtx.strokeStyle = 'rgba(102,255,67,.48)';
+    radialCtx.shadowColor = '#34ff4c';
+    radialCtx.shadowBlur = canvasSize * .023;
+    radialCtx.stroke();
+    radialCtx.restore();
+
     for (let i = 0; i < BANDS; i++) {
       const angle = -Math.PI / 2 + i * TWO_PI / BANDS;
       const [r, g, b] = colorAt(i / BANDS);
-      const level = state.levels[i];
-      const lit = Math.max(0, Math.min(segmentsPerBar, Math.round(level * segmentsPerBar)));
+      const level = Math.min(1, Math.max(0, state.levels[i]));
+      const height = minLit + level * maxExtension;
       radialCtx.save();
       radialCtx.translate(c, c);
       radialCtx.rotate(angle + Math.PI / 2);
-      for (let j = 0; j < segmentsPerBar; j++) {
-        // Barras reais, divididas em quadradinhos radiais, sem animar em silêncio.
-        const y = radius + j * (segmentLength + segmentGap);
-        radialCtx.fillStyle = j < lit
-          ? `rgba(${r},${g},${b},${Math.min(1, .87 + j * .009)})`
-          : `rgba(${r},${g},${b},.085)`;
-        if (j < lit) {
-          radialCtx.shadowColor = `rgba(${r},${g},${b},.60)`;
-          radialCtx.shadowBlur = Math.max(2, canvasSize * .012);
-        } else {
-          radialCtx.shadowBlur = 0;
-        }
-        radialCtx.fillRect(-barWidth / 2, -y - segmentLength, barWidth, segmentLength);
+      if (level > .012 || hasSpectrum) {
+        const gradient = radialCtx.createLinearGradient(0, -radius, 0, -radius-height);
+        gradient.addColorStop(0, `rgba(${r},${g},${b},.83)`);
+        gradient.addColorStop(.58, `rgb(${r},${g},${b})`);
+        gradient.addColorStop(1, `rgba(${Math.min(255,r+18)},${Math.min(255,g+18)},${Math.min(255,b+18)},1)`);
+        radialCtx.fillStyle = gradient;
+        radialCtx.shadowColor = `rgba(${r},${g},${b},.76)`;
+        radialCtx.shadowBlur = Math.max(6, canvasSize * .035);
+      } else {
+        radialCtx.fillStyle = `rgba(${r},${g},${b},.11)`;
+        radialCtx.shadowBlur = 0;
       }
+      // Barra em forma de bloco/trapézio, larga e com espaços expressivos entre colunas.
+      // A forma acompanha as barras sólidas da referência visual final.
+      radialCtx.beginPath();
+      radialCtx.moveTo(-widthInside/2, -radius);
+      radialCtx.lineTo(widthInside/2, -radius);
+      radialCtx.lineTo(widthOutside/2, -radius-height);
+      radialCtx.lineTo(-widthOutside/2, -radius-height);
+      radialCtx.closePath();
+      radialCtx.fill();
       radialCtx.restore();
     }
   }
@@ -254,12 +275,12 @@
       ctx = new AudioContext();
       const source = ctx.createMediaElementSource(audio);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 4096;
+      analyser.fftSize = 8192;
       analyser.minDecibels = -100;
       analyser.maxDecibels = -12;
       // A suavização interna alta fazia o equalizador responder devagar.
       // Um valor baixo deixa o movimento acompanhar as batidas reais.
-      analyser.smoothingTimeConstant = .08;
+      analyser.smoothingTimeConstant = .04;
       // Única conexão ao destino para não duplicar áudio nem criar eco.
       source.connect(ctx.destination);
       source.connect(analyser);
@@ -268,7 +289,7 @@
       state.frequencyData = new Float32Array(analyser.frequencyBinCount);
       const nyquist = ctx.sampleRate / 2;
       const resolution = ctx.sampleRate / analyser.fftSize;
-      const minFreq = 50;
+      const minFreq = 60;
       const maxFreq = Math.min(16000, nyquist * .96);
       state.frequencyRanges = Array.from({length:BANDS}, (_, i) => {
         const lowHz = minFreq * Math.pow(maxFreq/minFreq, i/BANDS);
@@ -306,25 +327,49 @@
     const attack = 1 - Math.exp(-elapsed / ATTACK_MS);
     const release = 1 - Math.exp(-elapsed / RELEASE_MS);
     state.analyser.getFloatFrequencyData(state.frequencyData);
-    let active = false;
+    // Avalia 24 bandas logarítmicas do sinal recebido. Picos e vales reais
+    // ficam visualmente distintos: banda forte sobe, banda fraca permanece baixa.
+    const dbBands = new Float32Array(BANDS);
+    let maxDb = -100;
     for (let i = 0; i < BANDS; i++) {
       const [start, stop] = state.frequencyRanges[i];
-      let sum = 0;
-      let count = 0;
+      let sum = 0, peak = 0, count = 0;
       for (let j = start; j < stop; j++) {
-        const db = state.frequencyData[j];
-        if (Number.isFinite(db)) {
-          sum += Math.pow(10, db / 20);
+        const binDb = state.frequencyData[j];
+        if (Number.isFinite(binDb)) {
+          const amp = Math.pow(10, binDb / 20);
+          sum += amp;
+          peak = Math.max(peak, amp);
           count++;
         }
       }
-      const amplitude = count ? sum / count : 0;
-      const db = amplitude ? 20 * Math.log10(amplitude) : -100;
-      const target = Math.max(0, Math.min(1, (db + 91) / 76));
+      // Mistura média e pico preserva os transientes, sem nivelar bandas vizinhas.
+      const amp = count ? .65 * (sum / count) + .35 * peak : 0;
+      let db = amp ? 20 * Math.log10(amp) : -100;
+      // Compensação suave da queda normal de energia nas frequências altas.
+      const normalizedFrequency = i / (BANDS - 1);
+      db += 5.0 * normalizedFrequency;
+      dbBands[i] = Math.max(-100, Math.min(0, db));
+      maxDb = Math.max(maxDb, dbBands[i]);
+    }
+    // Normalização dinâmica por quadro, baseada SOMENTE no áudio efetivamente
+    // recebido. A banda dominante sobe; bandas mais fracas permanecem baixas.
+    // O contraste local destaca diferenças naturais entre frequências vizinhas.
+    let active = false;
+    const audible = Math.min(1,Math.max(0,(maxDb+90)/18));
+    for (let i = 0; i < BANDS; i++) {
+      const db = dbBands[i];
+      const left = dbBands[(i+BANDS-1)%BANDS];
+      const right = dbBands[(i+1)%BANDS];
+      const localContrast = Math.max(-1,Math.min(1,(db-(left+right)*.5)/12));
+      const relativePeak = Math.max(0,Math.min(1,(db-(maxDb-28))/28));
+      let target = Math.max(0,Math.min(1,(relativePeak + localContrast*.26)*1.20));
+      target = Math.pow(target,1.08) * audible;
+      if (maxDb < -87 || db < -94) target = 0;
       const previous = state.levels[i];
-      const next = previous + (target - previous) * (target > previous ? attack : release);
-      state.levels[i] = next < .006 ? 0 : next;
-      if (target > .055) active = true;
+      const next = previous + (target-previous) * (target > previous ? attack : release);
+      state.levels[i] = next < .007 ? 0 : next;
+      if (state.levels[i] > .04) active = true;
     }
     ui.equalizer.setAttribute('aria-label', active ? 'Equalizador circular reagindo ao áudio da Nativa FM' : 'Equalizador circular sem sinal detectado');
     drawSpectrum();
@@ -670,7 +715,7 @@
   });
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch((error) => console.warn('Service Worker:', error)));
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.9.0').catch((error) => console.warn('Service Worker:', error)));
   }
 
   setStatus('off');

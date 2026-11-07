@@ -1,8 +1,8 @@
-/* Nativa FM 1.7.1: cache apenas da interface; streaming e metadados nunca entram em cache. */
-const CACHE = 'nativa-fm-v1.7.1';
+/* Nativa FM 1.8.0: cache apenas da interface; streaming e metadados nunca entram em cache. */
+const CACHE = 'nativa-fm-v1.9.0';
 const FILES = [
   './', './index.html', './styles.css', './gate.js', './landing.js', './app.js', './config.js', './manifest.webmanifest',
-  './assets/nativa-fm-original.png', './assets/whatsapp.svg',
+  './assets/nativa-fm-original.png', './assets/whatsapp.svg', './assets/neon-waves-v2.svg',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png', './icons/favicon-64.png'
 ];
@@ -11,7 +11,7 @@ self.addEventListener('install', (event) => {
 });
 self.addEventListener('activate', (event) => {
   event.waitUntil(Promise.all([
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))),
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith('nativa-fm-v') && key !== CACHE).map((key) => caches.delete(key)))),
     self.clients.claim()
   ]));
 });

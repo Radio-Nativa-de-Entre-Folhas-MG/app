@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
   let pathname;
   try { pathname = new URL(req.url, 'http://localhost').pathname; }
   catch (_) {return json(res, 400, {error:'URL inválida.'});}
-  if (pathname === '/api/health') return json(res, 200, {service:'nativa-fm-proxy', ready:true, version:'1.7.0'});
+  if (pathname === '/api/health') return json(res, 200, {service:'nativa-fm-proxy', ready:true, version:'1.7.1'});
   if (pathname === '/api/stream' && method === 'GET') return void proxyStream(res, STREAM, false);
   if (pathname === '/api/metadata' && method === 'GET') return void proxyStream(res, META, true);
   if (pathname.startsWith('/api/')) return json(res, 404, {error:'Rota não encontrada.'});

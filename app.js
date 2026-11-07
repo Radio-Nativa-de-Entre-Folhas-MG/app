@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.7.0 — equalizador circular de frequência real com visual neon. */
+/* Nativa FM 1.7.1 — equalizador circular com barras largas, fiel à referência visual. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -49,7 +49,7 @@
     analyser: null,
     frequencyData: null,
     raf: 0,
-    levels: new Float32Array(72),
+    levels: new Float32Array(48),
     lastMeterFrame: 0,
     frequencyRanges: [],
     metadata: null,
@@ -58,7 +58,7 @@
     progressEvents: 0
   };
 
-  const BANDS = 72;
+  const BANDS = 48;
   const ATTACK_MS = 16;
   const RELEASE_MS = 110;
   const radialCtx = ui.equalizer.getContext('2d', {alpha: true});
@@ -108,7 +108,9 @@
     const radius = canvasSize * .307;
     const segmentLength = canvasSize * .0105;
     const segmentGap = canvasSize * .004;
-    const barWidth = Math.max(1.6, canvasSize * .0116);
+    // Proporções da referência aprovada: menos colunas e segmentos mais largos.
+    // Mantém espaçamento uniforme entre as barras, independentemente do tamanho da tela.
+    const barWidth = Math.max(1.6, canvasSize * .029);
     const segmentsPerBar = 13;
     radialCtx.clearRect(0, 0, canvasSize, canvasSize);
     for (let i = 0; i < BANDS; i++) {

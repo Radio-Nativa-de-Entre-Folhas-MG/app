@@ -1,4 +1,4 @@
-NATIVA FM — LAUDO TÉCNICO V1.7.0
+NATIVA FM — LAUDO TÉCNICO V1.7.1
 Data: 07/11/2026
 
 OBJETIVO
@@ -14,14 +14,14 @@ ALTERAÇÕES PRINCIPAIS
   WhatsApp e botão ligar/desligar no rodapé.
 - styles.css: identidade verde/neon, fundo escuro, cartões com borda luminosa,
   botão verde/desligado e vermelho/ligado; tamanho responsivo sem rolagem.
-- app.js: Web Audio Analyser FFT (4096 amostras), 72 bandas logarítmicas entre
+- app.js: Web Audio Analyser FFT (4096 amostras), 48 bandas logarítmicas entre
   50 Hz e 16 kHz ou limite permitido pela amostragem; Canvas 2D com 13
   segmentos coloridos por coluna e níveis independentes.
 - A suavização agora usa aproximadamente 16 ms de ataque e 110 ms de queda.
   O visualizador não anima artificialmente quando não há sinal de áudio.
 - mantidos: streaming Zeno, metadados SSE, reconexão, botão único,
   WhatsApp codificado, logo original, gate de instalação e suporte PWA.
-- cache do Service Worker e integridade do server.js versionados em 1.7.0.
+- cache do Service Worker e integridade do server.js versionados em 1.7.1.
 
 NOTAS IMPORTANTES
 -----------------
@@ -51,3 +51,16 @@ TESTES EVIDENCIADOS
   injetados em página de testes, não pelo servidor local dentro do Chromium.
 - Fluxo público de instalação validado nesse ambiente de testes: botão
   INSTALAR APLICATIVO presente e sem modal com FECHAR/TENTAR NOVAMENTE.
+
+AJUSTE EXCLUSIVO V1.7.1
+-----------------------
+- Redução de 72 para 48 barras radiais (redução de 33,3% na quantidade).
+- Espessura relativa alterada de 1,16% para 2,9% do diâmetro do visualizador (2,5 vezes).
+- Mesmas 13 divisões por barra, mesma distribuição de cores e mesmo processamento FFT.
+- Bandas de frequência recalculadas automaticamente para a nova quantidade.
+- Layout e ações do aplicativo preservados; alterações pontuais e incrementais.
+- Testes locais com áudio simulado: 390×844, 540×850, 320×568 e 320×480.
+- Botão liga/desliga e visualizador de 48 bandas verificados sem erros JavaScript.
+- Página pública de instalação verificada em renderização separada.
+- Teste HTTP: servidor local respondeu 200 para a página; o navegador do ambiente bloqueou a navegação direta ao localhost.
+- Testes com áudio simulado e inspeção visual são validação local, não prova de reprodução real da Zeno.

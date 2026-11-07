@@ -1,5 +1,5 @@
-/* Nativa FM 1.7.0: cache apenas da interface; streaming e metadados nunca entram em cache. */
-const CACHE = 'nativa-fm-v1.7.0';
+/* Nativa FM 1.7.1: cache apenas da interface; streaming e metadados nunca entram em cache. */
+const CACHE = 'nativa-fm-v1.7.1';
 const FILES = [
   './', './index.html', './styles.css', './gate.js', './landing.js', './app.js', './config.js', './manifest.webmanifest',
   './assets/nativa-fm-original.png', './assets/whatsapp.svg',

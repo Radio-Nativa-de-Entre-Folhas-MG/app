@@ -1,12 +1,14 @@
 NATIVA FM 98.7 — O AMOR DE ENTRE FOLHAS
-APLICATIVO PWA | VERSÃO 1.7.0
+APLICATIVO PWA | VERSÃO 1.7.1
 ========================================
 
 O QUE HÁ NESTA VERSÃO
 ---------------------
 A interface do aplicativo instalado reproduz o conceito visual aprovado:
+- Revisão 1.7.1: 48 barras mais espessas (largura 2,5× maior) para
+  acompanhar melhor as proporções da imagem de referência.
 - Identidade verde e preta, painéis luminosos, logotipo ORIGINAL da rádio.
-- NOVO equalizador CIRCULAR ao redor do logotipo com 72 barras segmentadas.
+- NOVO equalizador CIRCULAR ao redor do logotipo com 48 barras segmentadas.
 - Cada barra representa uma faixa de frequência; os níveis vêm da análise
   FFT do streaming recebido (Web Audio API), e não de uma animação aleatória.
 - Resposta rápida (ataque aproximado de 16 ms e queda de 110 ms), com

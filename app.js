@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.4.0 — janela compacta e botão verde/vermelho conforme energia. */
+/* Nativa FM 1.5.0 — equalizador completo de 28 bandas, sem indicadores técnicos na tela. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -18,11 +18,7 @@
     title: $('trackTitle'),
     artist: $('trackArtist'),
     metaLabel: $('metadataStatus'),
-    wave: $('playingWave'),
-    left: $('meterLeft'),
-    right: $('meterRight'),
-    valueL: $('valueLeft'),
-    valueR: $('valueRight'),
+    equalizer: $('equalizer'),
     meterNote: $('meterNote'),
     connection: $('connectionText'),
     requestSong: $('requestSong'),
@@ -50,19 +46,18 @@
     currentGraph: false,
     currentHadAudio: false,
     context: null,
-    analysers: null,
-    buffers: null,
+    analyser: null,
+    frequencyData: null,
     raf: 0,
-    smooth: [-90, -90],
-    silenceFrames: 0,
+    levels: new Float32Array(28),
+    frequencyRanges: [],
     metadata: null,
     metadataSeen: false,
     lastProgressAt: 0,
     progressEvents: 0
   };
 
-  const SEGMENTS = 24;
-  const FLOOR = -60;
+  const BANDS = 28;
   const STARTUP_TIMEOUT = 35000;
   const BUFFER_TIMEOUT = 28000;
   const STABLE_PLAYBACK = 20000;
@@ -95,16 +90,16 @@
   ui.requestSong.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de pedir uma música na programação.');
   ui.advertise.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de saber como anunciar com vocês. Podem enviar informações e valores?');
 
-  const meterBars = [createMeter(ui.left), createMeter(ui.right)];
-
-  function createMeter(track) {
-    track.replaceChildren();
-    return Array.from({length: SEGMENTS}, () => {
-      const bar = document.createElement('span');
-      track.appendChild(bar);
-      return bar;
-    });
-  }
+  // Um espectro geral com 28 colunas independentes e nenhuma animação falsa.
+  const eqBars = Array.from({length: BANDS}, () => {
+    const column = document.createElement('span');
+    column.className = 'eq-column';
+    const fill = document.createElement('span');
+    fill.className = 'eq-fill';
+    column.appendChild(fill);
+    ui.equalizer.appendChild(column);
+    return fill;
+  });
 
   function setConnectionInfo(text) {
     ui.connection.textContent = text;
@@ -126,14 +121,13 @@
     ui.powerText.textContent = state.desired ? 'DESLIGAR RÁDIO' : 'LIGAR RÁDIO';
     ui.helper.textContent = customMessage || helper;
     ui.power.setAttribute('aria-pressed', String(state.desired));
-    ui.wave.classList.toggle('is-active', mode === 'on' || mode === 'connecting');
   }
 
-  function resetMeters(note = 'Inicie a rádio para medir o áudio em tempo real.') {
-    state.smooth = [-90, -90];
-    state.silenceFrames = 0;
-    displayMeter(0, -90);
-    displayMeter(1, -90);
+  function resetMeters(note = 'Equalizador aguardando áudio.') {
+    state.levels.fill(0);
+    for (const bar of eqBars) bar.style.height = '0%';
+    ui.equalizer.classList.remove('is-receiving');
+    ui.equalizer.setAttribute('aria-label', note);
     ui.meterNote.textContent = note;
   }
 
@@ -153,8 +147,9 @@
   function closeAudioContext() {
     const ctx = state.context;
     state.context = null;
-    state.analysers = null;
-    state.buffers = null;
+    state.analyser = null;
+    state.frequencyData = null;
+    state.frequencyRanges = [];
     if (ctx) {
       try { ctx.close().catch(() => {}); } catch (_) {}
     }
@@ -181,88 +176,90 @@
     try {
       ctx = new AudioContext();
       const source = ctx.createMediaElementSource(audio);
-      const splitter = ctx.createChannelSplitter(2);
-      const left = ctx.createAnalyser();
-      const right = ctx.createAnalyser();
-      left.fftSize = right.fftSize = 2048;
-      left.smoothingTimeConstant = right.smoothingTimeConstant = 0;
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 4096;
+      analyser.minDecibels = -100;
+      analyser.maxDecibels = -12;
+      analyser.smoothingTimeConstant = .68;
+      // Única conexão ao destino para não duplicar áudio nem criar eco.
       source.connect(ctx.destination);
-      source.connect(splitter);
-      splitter.connect(left, 0);
-      splitter.connect(right, 1);
+      source.connect(analyser);
       state.context = ctx;
-      state.analysers = [left, right];
-      state.buffers = [new Float32Array(left.fftSize), new Float32Array(right.fftSize)];
+      state.analyser = analyser;
+      state.frequencyData = new Float32Array(analyser.frequencyBinCount);
+      const nyquist = ctx.sampleRate / 2;
+      const resolution = ctx.sampleRate / analyser.fftSize;
+      const minFreq = 50;
+      const maxFreq = Math.min(16000, nyquist * .96);
+      state.frequencyRanges = Array.from({length:BANDS}, (_, i) => {
+        const lowHz = minFreq * Math.pow(maxFreq/minFreq, i/BANDS);
+        const highHz = minFreq * Math.pow(maxFreq/minFreq, (i+1)/BANDS);
+        const start = Math.max(1,Math.floor(lowHz/resolution));
+        const stop = Math.min(analyser.frequencyBinCount,Math.max(start+1,Math.ceil(highHz/resolution)));
+        return [start, stop];
+      });
       ctx.onstatechange = () => {
-        if (state.context === ctx && state.desired && state.playing && !document.hidden && ctx.state === 'running' && !state.raf) {
+        if (state.context === ctx && state.desired && state.playing &&
+            !document.hidden && ctx.state === 'running' && !state.raf) {
           state.raf = requestAnimationFrame(meterFrame);
         }
       };
       ctx.resume().catch(() => {});
       return true;
     } catch (error) {
-      console.warn('[Nativa FM] Medição indisponível:', error);
-      if (ctx) {
-        try { ctx.close().catch(() => {}); } catch (_) {}
-      }
+      console.warn('[Nativa FM] Análise de frequências indisponível:', error);
+      if (ctx) { try {ctx.close().catch(() => {});} catch (_) {} }
       closeAudioContext();
       return false;
     }
   }
 
-  function measureDb(analyser, buffer) {
-    let energy = 0;
-    if (typeof analyser.getFloatTimeDomainData === 'function') {
-      analyser.getFloatTimeDomainData(buffer);
-      for (let i = 0; i < buffer.length; i++) energy += buffer[i] * buffer[i];
-    } else {
-      const bytes = new Uint8Array(buffer.length);
-      analyser.getByteTimeDomainData(bytes);
-      for (const byte of bytes) {
-        const sample = (byte - 128) / 128;
-        energy += sample * sample;
-      }
-    }
-    const rms = Math.sqrt(energy / buffer.length);
-    return rms > 0 ? Math.max(-90, Math.min(0, 20 * Math.log10(rms))) : -90;
-  }
-
-  function displayMeter(channel, value) {
-    const lit = Math.round(Math.max(0, Math.min(SEGMENTS, ((value - FLOOR) / -FLOOR) * SEGMENTS)));
-    meterBars[channel].forEach((element, index) => element.classList.toggle('is-active', index < lit));
-    const number = value <= -89 ? '−∞' : value.toFixed(1);
-    const output = channel ? ui.valueR : ui.valueL;
-    output.innerHTML = `${number}<small>dB</small>`;
-    (channel ? ui.right : ui.left).setAttribute('aria-label', `Canal ${channel ? 'direito' : 'esquerdo'}: ${number} dBFS`);
-  }
-
   function meterFrame() {
     state.raf = 0;
-    if (!state.desired || !state.playing || !state.analysers || document.hidden) return;
+    if (!state.desired || !state.playing || !state.analyser || document.hidden) return;
     if (!state.context || state.context.state !== 'running') {
-      resetMeters('Análise pausada pelo dispositivo. A transmissão continua ativa.');
+      resetMeters('Análise de áudio temporariamente suspensa.');
       return;
     }
-    const db = [measureDb(state.analysers[0], state.buffers[0]), measureDb(state.analysers[1], state.buffers[1])];
-    for (let i = 0; i < 2; i++) {
-      state.smooth[i] += (db[i] - state.smooth[i]) * (db[i] > state.smooth[i] ? 0.37 : 0.14);
-      displayMeter(i, state.smooth[i]);
+    state.analyser.getFloatFrequencyData(state.frequencyData);
+    let signalFound = false;
+    for (let i = 0; i < BANDS; i++) {
+      const [start, stop] = state.frequencyRanges[i];
+      let sum = 0;
+      let count = 0;
+      for (let j = start; j < stop; j++) {
+        const db = state.frequencyData[j];
+        if (Number.isFinite(db)) {
+          // Média linear de amplitude, retornando para decibéis.
+          sum += Math.pow(10, db / 20);
+          count++;
+        }
+      }
+      const amplitude = count ? sum / count : 0;
+      const db = amplitude ? 20 * Math.log10(amplitude) : -100;
+      // Escala visual com zero verdadeiro em silêncio. Cada coluna corresponde
+      // somente à sua faixa de frequência; não há valores predefinidos.
+      const target = Math.max(0, Math.min(1, (db + 91) / 76));
+      const next = state.levels[i] + (target - state.levels[i]) * (target > state.levels[i] ? .46 : .17);
+      state.levels[i] = next < .008 ? 0 : next;
+      const height = state.levels[i] * 100;
+      eqBars[i].style.height = `${height.toFixed(1)}%`;
+      if (target > .055) signalFound = true;
     }
-    if (db[0] <= -89 && db[1] <= -89) state.silenceFrames++;
-    else state.silenceFrames = 0;
-    if (state.silenceFrames === 240) ui.meterNote.textContent = 'Sem amostras neste momento. A transmissão pode estar silenciosa ou a leitura pode ser limitada pelo navegador.';
-    if (state.silenceFrames === 0) ui.meterNote.textContent = 'Leitura RMS real e independente dos canais esquerdo e direito.';
+    ui.equalizer.classList.toggle('is-receiving', signalFound);
     state.raf = requestAnimationFrame(meterFrame);
   }
 
   function startMeterAnimation() {
     if (state.raf) cancelAnimationFrame(state.raf);
     state.raf = 0;
-    if (!state.analysers) {
-      resetMeters('Reprodução ativa. O navegador não liberou a leitura detalhada do áudio.');
+    if (!state.analyser) {
+      resetMeters('Áudio disponível. O dispositivo não permite visualizar as frequências.');
       return;
     }
-    if (state.context?.state === 'suspended' && !document.hidden) state.context.resume().catch(() => {});
+    if (state.context?.state === 'suspended' && !document.hidden) {
+      state.context.resume().catch(() => {});
+    }
     if (!document.hidden) state.raf = requestAnimationFrame(meterFrame);
   }
 
@@ -434,7 +431,7 @@
           discardAudio();
           state.desired = false;
           state.playing = false;
-          setStatus('error', 'O dispositivo exige um novo toque para iniciar a rádio.');
+          setStatus('off', 'Toque novamente para ouvir a Nativa FM.');
           setConnectionInfo('A reprodução foi bloqueada momentaneamente. Toque em ligar para tentar outra vez.');
           resetMeters('Reprodução bloqueada pelo sistema neste momento.');
         } else {
@@ -578,7 +575,7 @@
     }
   });
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && state.desired && state.playing && state.analysers) {
+    if (!document.hidden && state.desired && state.playing && state.analyser) {
       state.context?.resume().catch(() => {});
       if (!state.raf) state.raf = requestAnimationFrame(meterFrame);
     }
@@ -587,7 +584,7 @@
     }
   });
   window.addEventListener('pageshow', () => {
-    if (state.desired && state.playing && state.analysers && !state.raf) state.raf = requestAnimationFrame(meterFrame);
+    if (state.desired && state.playing && state.analyser && !state.raf) state.raf = requestAnimationFrame(meterFrame);
   });
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {

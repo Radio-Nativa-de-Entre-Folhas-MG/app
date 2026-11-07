@@ -1,48 +1,52 @@
-NATIVA FM PWA — LAUDO TÉCNICO V1.4.0
-Data de referência: 06/11/2026
+NATIVA FM — LAUDO TÉCNICO DA VERSÃO 1.5.0
+Data: 06/11/2026
 
-SOLICITAÇÕES
-1. No Windows, abrir a PWA preferencialmente em janela vertical, como
-   na captura fornecida, em vez de ocupar o desktop inteiro.
-2. O botão de ligar/desligar deve trocar de cor com o estado da rádio.
-3. Corrigir a tela de instalação que aparecia indevidamente com
-   "Tentar novamente" e "Fechar" (solicitação anterior).
+ESCOPO SOLICITADO
+1. Remover os quadros informativos de Status e Leitura L/R.
+2. Aproveitar melhor a altura livre para aumentar e redistribuir a interface.
+3. Trocar dois medidores horizontais por um equalizador completo.
+4. O equalizador NÃO deve ser duplicado por canal: visualização geral.
+5. Continuar sem rolagem e sem dados técnicos na tela do ouvinte.
 
 ALTERAÇÕES
-- app.js: tentativa única de resizeTo(540, 850) na abertura em modo
-  standalone do Windows; limita o tamanho ao espaço disponível.
-  Não move a janela, não redimensiona a cada evento de reprodução
-  e não altera dispositivos móveis ou guias normais do navegador.
-- app.js: a cor do botão usa o estado desejado da rádio. Verde significa
-  desligado; vermelho significa ligado, inclusive em conexão/reconexão.
-  O texto do botão é sempre LIGAR RÁDIO ou DESLIGAR RÁDIO.
-- styles.css: novo gradiente vermelho e foco acessível para o botão ligado.
-  Regra [hidden] com prioridade, corrigindo a abertura indevida de elementos.
-  Ajustes adicionais para preservar os botões em telas de 320 x 480.
-- index.html: removido o antigo painel modal de instalação.
-- landing.js: continua detectando o sistema operacional automaticamente.
-  O fluxo usa o prompt nativo quando disponível e instruções curtas no
-  mesmo lugar caso o sistema não ofereça instalação por botão. O registro
-  do service worker passa a acontecer também na página de instalação.
-- sw.js: cache renomeado para v1.4.0.
-- server.js: identificação de versão atualizada.
+- index.html: removeu o quadro técnico e os medidores de dois canais; criou
+  painel SOM AO VIVO com 28 colunas; preservou a marca, metadados, energia e
+  dois contatos. As informações internas de estado foram mantidas apenas
+  para leitores de tela, fora da interface visual.
+- styles.css: ampliou hero e botões, redimensionou elementos em diferentes
+  alturas e criou equalizador com segmentos luminosos. A área do equalizador
+  se expande para absorver o espaço anteriormente ocupado pelo quadro técnico.
+- app.js: substituiu dois AnalyserNodes por um AnalyserNode para o áudio
+  combinado; FFT 4096, 28 intervalos de frequência logarítmicos, médias
+  energéticas por intervalo e interpolação para suavizar o movimento. O
+  mesmo MediaElementAudioSource envia áudio uma única vez ao alto-falante.
+- sw.js: alterado nome de cache para nativa-fm-v1.5.0, renovando a interface.
+- server.js: atualizada versão de diagnóstico e comentário de espectro.
+- Mantidos: streaming Zeno, integração WhatsApp, metadados, reconexão,
+  mudança verde/vermelho e tentativa de janela compacta no Windows.
 
-TESTES EXECUTADOS
-- node --check para app.js, landing.js, sw.js, server.js.
-- Renderização DOM/CSS e interação em Chromium headless por set_content,
-  devido ao bloqueio de navegação para localhost no ambiente.
-- Testes dos cenários navegador / standalone simulado para 390x844,
-  320x480, 540x850 e 360x640.
-- Botão alternou entre gradiente verde e vermelho, mantendo o texto correto.
-- Teste com ambiente Windows standalone simulado verificou uma chamada
-  única de resizeTo(540, 850) na abertura da aplicação.
-- Instalação sem modal e sem botões Fechar/Tentar novamente.
-- Controles essenciais caberam em telas pequenas sem rolagem.
+RESULTADO
+- 28 barras reagem às frequências do sinal recebido.
+- Um sinal senoidal pode movimentar poucas colunas; música completa tende a
+  movimentar mais colunas, porque possui mais frequências presentes.
+- Sem áudio real acessível, o equalizador permanece parado. Nenhum movimento
+  é artificialmente inventado.
+- A interface visual não possui linhas ou cartões de diagnóstico técnico.
 
-LIMITAÇÕES
-- O Chrome/Edge no Windows pode recusar resizeTo ou restaurar outra
-  geometria. O tamanho final não pode ser garantido apenas pela PWA.
-- A instalação nativa depende das permissões do navegador; no iOS é
-  necessário seguir o procedimento do sistema.
-- Não foi comprovada a reprodução contínua com a Zeno em rede real,
-  instalação em dispositivos físicos ou leitura L/R do streaming real.
+VERIFICAÇÕES EXECUTADAS
+- Sintaxe JavaScript validada.
+- Teste em Chromium simulado, com áudio multifaixas local (não enviado no ZIP),
+  nas dimensões: 540x850, 390x844, 320x480, 360x640 e 412x915.
+- Todas as 28 colunas criadas e exibiram níveis variáveis conforme o áudio.
+- Sem rolagem e sem cortes dos botões de WhatsApp nos cinco tamanhos.
+- Botão vermelho durante transmissão, verde após desligamento.
+- As barras zeraram ao desligar.
+- Tela de instalação continuou disponível no modo navegador.
+- Fotos de prévia registradas para desktop e celular com áudio de teste.
+
+LIMITAÇÕES / PENDÊNCIAS
+- Instalação no Windows, Android e iOS em equipamentos reais não validada.
+- Streaming real Zeno e qualidade da conexão exigem teste após publicação.
+- A visualização depende de acesso ao áudio no navegador; sem permissão CORS
+  nem proxy, a rádio pode reproduzir sem análise de frequências.
+- O navegador pode não obedecer a tentativa de redimensionar a janela.

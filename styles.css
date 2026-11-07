@@ -203,3 +203,123 @@ html:not([data-pwa-display="standalone"]) #appShell{display:none!important}
   .status-card{display:none}
   .playback-helper{min-height:12px}
 }
+
+/* Nativa FM v1.5.0 — uma só tela, sem dados técnicos, com espectro musical real. */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;clip-path:inset(50%)!important}
+.app-shell{gap:clamp(7px,1.35dvh,12px)}
+.home-screen{
+  display:grid;
+  grid-template-rows:auto auto auto minmax(90px,1fr) auto;
+  gap:clamp(7px,1.4dvh,12px);
+  min-height:0;
+  height:100%;
+  align-content:stretch;
+  overflow:hidden;
+}
+.hero{min-height:0;gap:clamp(3px,.55dvh,6px)}
+.hero-logo{height:clamp(80px,23dvh,195px);max-width:65vw;object-fit:contain}
+.frequency{font-size:clamp(18px,2.8dvh,23px)}
+.hero h1{font-size:clamp(11px,1.9dvh,15px)}
+.power-wrap{gap:5px;min-height:0}
+.power-button{min-height:clamp(48px,7dvh,60px);font-size:clamp(12px,1.9dvh,15px)}
+.now-card{border-radius:19px;padding:clamp(10px,1.55dvh,15px)}
+.now-content{gap:12px}
+.now-title{font-size:clamp(14px,2dvh,18px)}
+.now-artist{font-size:clamp(11px,1.65dvh,13px)}
+.music-icon{width:42px;height:42px;border-radius:13px}
+.equalizer-card{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  min-height:0;
+  overflow:hidden;
+  background:linear-gradient(170deg,#142b1d,#091910 75%);
+  border:1px solid #2b5238;
+  border-radius:20px;
+  padding:clamp(12px,1.65dvh,18px);
+  box-shadow:0 15px 35px #0003,inset 0 1px 0 #ffffff0a;
+}
+.equalizer-header{margin:0 0 9px 0;flex:0 0 auto}
+.eq-decoration{font-size:9px;letter-spacing:1.6px;font-weight:950;color:#64856c}
+.eq-decoration b{color:#6dea89}
+.equalizer{
+  position:relative;
+  min-height:58px;
+  flex:1 1 auto;
+  display:grid;
+  grid-template-columns:repeat(28,minmax(0,1fr));
+  gap:clamp(2px,.55vw,5px);
+  align-items:end;
+  padding:9px 5px 2px;
+  overflow:hidden;
+  background:repeating-linear-gradient(to top,transparent 0,transparent 23%,#ffffff07 23.4%,transparent 24%);
+  border-radius:12px;
+}
+.eq-column{position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0}
+.eq-column::before{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:100%;
+  border-radius:4px 4px 2px 2px;
+  background:linear-gradient(to top,#1e4930 0%,#1b3b2a 55%,#173020 100%);
+  opacity:.43;
+}
+.eq-fill{
+  z-index:1;
+  display:block;
+  position:relative;
+  width:100%;
+  flex-shrink:0;
+  height:0%;
+  border-radius:4px 4px 2px 2px;
+  background:linear-gradient(to top,#2ccf62 0%,#72ef83 45%,#b4ff9f 78%,#f3ef8b 93%,#ff9d54 100%);
+  box-shadow:0 0 12px #68ff6e55;
+  transition:height .07s linear;
+  overflow:hidden;
+}
+.eq-fill::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to top,transparent 0,transparent 7px,#07180aaa 7px,#07180aaa 9px);pointer-events:none}
+.eq-floor{
+  display:grid;
+  grid-template-columns:repeat(28,minmax(0,1fr));
+  gap:clamp(2px,.55vw,5px);
+  padding:6px 5px 0;
+  flex:0 0 auto;
+}
+.eq-floor i{display:block;height:3px;border-radius:8px;background:#3a8f54;opacity:.55}
+.contact-bar{gap:10px}
+.contact-action{min-height:clamp(44px,6dvh,54px);border-radius:16px;font-size:clamp(9px,1.45dvh,11px)}
+.contact-action img{width:21px;height:21px}
+
+/* Proporções adaptativas: nunca corte o equalizador ou os botões. */
+@media(max-height:735px){
+  .hero-logo{height:clamp(67px,18.5dvh,135px)}
+  .home-screen{gap:clamp(6px,1dvh,9px)}
+  .equalizer-card{padding:10px 12px}
+}
+@media(max-height:590px){
+  .app-shell{gap:6px;padding-top:max(env(safe-area-inset-top),6px);padding-bottom:max(env(safe-area-inset-bottom),6px)}
+  .home-screen{gap:5px;grid-template-rows:auto auto auto minmax(72px,1fr) auto}
+  .hero-logo{height:clamp(46px,13dvh,76px)}
+  .hero{gap:1px;padding-top:0}
+  .frequency{font-size:15px}
+  .hero h1{font-size:10px}
+  .power-button{min-height:43px}
+  .playback-helper{font-size:9px;min-height:0}
+  .now-card{padding:7px 9px}
+  .now-content{gap:8px}
+  .music-icon{width:30px;height:30px}
+  .now-title{font-size:13px}
+  .now-artist{font-size:10px;margin-top:1px}
+  .card-header{margin-bottom:4px}
+  .equalizer-card{padding:8px 10px}
+  .equalizer-header{margin-bottom:3px}
+  .equalizer{min-height:40px;padding:4px 2px 0}
+  .eq-floor{padding:3px 2px 0}
+  .contact-action{min-height:36px;font-size:8.5px}
+  .contact-action img{height:16px;width:16px}
+  .on-air-badge{height:27px;font-size:9px}
+  .brand-mark{width:33px;height:33px}
+}
+@media(max-width:340px){
+  .equalizer{gap:2px}
+  .eq-floor{gap:2px}
+  .contact-action{font-size:8px;gap:4px;padding:0 5px}
+}

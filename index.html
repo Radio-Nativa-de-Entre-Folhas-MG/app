@@ -88,19 +88,19 @@
       </section>
 
       <section class="now-card" aria-label="Metadados da rádio">
-        <div class="card-header"><span class="section-label"><i class="led"></i> TOCANDO AGORA</span><span id="metadataStatus" class="metadata-status">AGUARDANDO DADOS</span></div>
+        <div class="card-header"><span class="section-label"><i class="led"></i> TOCANDO AGORA</span><span id="metadataStatus" class="sr-only" aria-live="polite">Aguardando dados</span></div>
         <div class="now-content">
           <span class="music-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 19V6.4L20 4v12.5M9 19c0 2-5 2.8-5 0s5-2.8 5 0Zm11-2.5c0 2-5 2.8-5 0s5-2.8 5 0Z"/></svg></span>
           <div class="now-copy"><p id="trackTitle" class="now-title">Nativa FM 98.7</p><p id="trackArtist" class="now-artist">O amor de Entre Folhas</p></div>
-          <span id="playingWave" class="mini-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          
         </div>
       </section>
 
-      <section class="meter-card" aria-label="Medidores de áudio reais L e R">
-        <div class="card-header"><span class="section-label"><i class="led"></i> NÍVEL DE ÁUDIO</span><span class="meter-unit">RMS · dBFS</span></div>
-        <div class="meter-scale" aria-hidden="true"><span>−60</span><span>−48</span><span>−36</span><span>−24</span><span>−12</span><span>0</span></div>
-        <div class="meter-row"><span class="channel-label">L<small>ESQ</small></span><div class="meter-track" id="meterLeft" role="img" aria-label="Canal esquerdo sem leitura"></div><output id="valueLeft" class="meter-value">--<small>dB</small></output></div>
-        <div class="meter-row"><span class="channel-label">R<small>DIR</small></span><div class="meter-track" id="meterRight" role="img" aria-label="Canal direito sem leitura"></div><output id="valueRight" class="meter-value">--<small>dB</small></output></div>
+      <section class="equalizer-card" aria-label="Equalizador musical que reage ao som da Nativa FM">
+        <div class="card-header equalizer-header"><span class="section-label"><i class="led"></i> SOM AO VIVO</span><span class="eq-decoration" aria-hidden="true">NATIVA <b>98.7</b></span></div>
+        <div id="equalizer" class="equalizer" role="img" aria-label="Equalizador de 28 faixas: aguardando áudio" aria-live="off"></div>
+        <div class="eq-floor" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p id="meterNote" class="sr-only">O equalizador reage às frequências reais do áudio quando disponível.</p>
       </section>
 
       <nav class="contact-bar" aria-label="Contato da rádio">
@@ -108,10 +108,7 @@
         <a id="advertise" class="contact-action contact-action--ad" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="19" height="19"><span>ANUNCIE COM A GENTE</span></a>
       </nav>
 
-      <section class="status-card" aria-label="Estado da conexão">
-        <div class="status-card__row"><span class="status-label">Status</span><span id="connectionText" class="status-value">Rádio desligada.</span></div>
-        <div class="status-card__row"><span class="status-label">Leitura L/R</span><span id="meterNote" class="status-value">Inicie a rádio para medir o áudio em tempo real.</span></div>
-      </section>
+      <p id="connectionText" class="sr-only" role="status" aria-live="polite">Rádio desligada.</p>
     </main>
   </div>
 

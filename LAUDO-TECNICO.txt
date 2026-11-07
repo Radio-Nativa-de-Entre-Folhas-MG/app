@@ -1,68 +1,62 @@
-NATIVA FM — LAUDO TÉCNICO V1.6.0
+NATIVA FM — LAUDO TÉCNICO V1.6.2
 Data: 06/11/2026
 
-ALTERAÇÕES SOLICITADAS
-----------------------
-1. Reposicionar o botão único LIGAR/DESLIGAR ao final da tela.
-2. Adotar cores estilo arco-íris no espectro, com quadradinhos progressivos:
-   cada nível conserva sua cor ao acender níveis adicionais acima dele.
-3. Substituir a letra N do cabeçalho pelo próprio logo original da rádio.
-4. Preservar simplicidade: tela única, compacta, sem menu e sem dados técnicos.
-
-ARQUIVOS MODIFICADOS
+ALTERAÇÃO SOLICITADA
 --------------------
-index.html
-- Moveu a seção de energia para depois dos dois contatos WhatsApp.
-- Substituiu o símbolo textual N por um IMG com o arquivo original da rádio.
-- Removeu a linha antiga de marcação estática abaixo do equalizador.
+Aplicar padrão moderno de SEIS CORES ao equalizador geral, sem retornar ao
+arco-íris e sem perder a resposta rápida da versão anterior.
 
-styles.css
-- Criou o equalizador de segmentos individuais com espaçamentos reais.
-- Os quadradinhos apagados são discretos. Ao acender, usam sua cor atribuída
-  e brilho correspondente, sem sobrescrever cores dos demais níveis.
-- Ajustou tamanhos do botão inferior, logo do cabeçalho e painel musical.
-- Preservou responsividade compacta, sem rolagem em celulares e Windows.
+IMPLEMENTAÇÃO
+-------------
+- Arquivo app.js: introduzida paleta de seis faixas profissionais e fixas por
+  altura, de baixo para cima:
+  verde-escuro #168F4D (3 quadradinhos)
+  verde        #28D472 (3 quadradinhos)
+  verde-limão  #ADEB57 (3 quadradinhos)
+  amarelo      #F4D448 (3 quadradinhos)
+  laranja      #F99A3E (3 quadradinhos)
+  vermelho     #F04C57 (2 quadradinhos)
+- Preservadas 28 bandas × 17 segmentos = 476 quadradinhos.
+- A cor de cada posição é constante: quando o nível aumenta, acendem mais
+  células acima; as já acesas não mudam de cor.
+- Mantidos o ataque de 14 ms e o decaimento de 70 ms, e a análise FFT real.
+- Arquivo styles.css: anotação da revisão visual.
+- sw.js: cache novo v1.6.2, evitando manter a versão antiga.
+- server.js: identificação da versão 1.6.2 no endpoint de integridade.
+- LEIA-ME.txt: instruções atualizadas.
 
-app.js
-- Mantidos Web Audio API, 28 bandas logarítmicas, FFT 4096, smoothing de
-  frequências, metadados SSE, player e sistema de reconexão.
-- Criou 17 células por coluna × 28 colunas = 476 células reais.
-- Cada célula recebe uma cor HSL predefinida pela sua posição de frequência
-  e altura. Uma medição acende de baixo para cima as células até o nível real
-  calculado; a célula inferior não muda de cor quando novas células acendem.
-- Desligar zera os níveis e apaga todos os segmentos; não existem barras
-  fictícias para indicar reprodução na ausência de dados.
+PRESERVADO
+----------
+- Logotipo original da Nativa FM, metadados, tela única e sem rolagem.
+- Botão ligar/desligar no rodapé, verde ao desligar e vermelho ao ligar.
+- WhatsApp para pedidos musicais e anúncios.
+- Reconexão automática do streaming Zeno.
+- Página pública de instalação PWA e janela compacta no Windows, quando
+  permitida pelo navegador.
 
-sw.js, server.js
-- Versão do cache e do diagnóstico atualizada para 1.6.0.
+VALIDAÇÃO
+---------
+- Sintaxe app.js, sw.js e server.js validada pelo Node.js.
+- Teste local em Chromium: 540×850, 390×844, 320×480, 360×640 e 412×915.
+  Em todos, 28 colunas e 476 segmentos, sem rolagem; controles e botão no
+  rodapé visíveis.
+- Conferida a paleta EXATA de 6 cores e a sequência fixa 3/3/3/3/3/2
+  em cada uma das 28 bandas.
+- Teste com áudio WAV sintético: barras reagiram ao som e ficaram apagadas
+  ao desligar; cores idênticas por altura em todas as colunas.
+- Teste de resposta rápida com medição controlada do analisador:
+  aproximadamente 67 ms para subir a 15 segmentos e 132 ms para descer
+  abaixo de 5 segmentos, resultados sujeitos à cadência do navegador.
+- Teste de nível elevado confirmou a iluminação das células vermelhas,
+  sem alterar a cor dos segmentos já acesos.
+- Servidor Node.js conferido: HTML, scripts, estilos, manifesto, imagem e
+  rota de integridade retornaram HTTP 200; versão 1.6.2 confirmada.
+- Prévia usa SINAL DE TESTE SIMULADO para mostrar todas as seis cores;
+  não é captura da programação real da emissora.
 
-PRESERVADO SEM ALTERAÇÃO DE LÓGICA
----------------------------------
-- Fluxo de instalação Android / iOS / Windows.
-- Um único botão, verde para ligar e vermelho para desligar.
-- WhatsApp para música e anúncios, sem caracteres espúrios nas mensagens.
-- Streaming da Zeno, reconexão e metadados quando disponíveis.
-- Tentativa de janela de até 540×850 no Windows, sujeita ao navegador.
-
-TESTES EXECUTADOS
------------------
-- Sintaxe JavaScript: arquivos principais válidos pelo Node.js.
-- Chromium com HTML/CSS injetados localmente e áudio WAV sintético de teste:
-  540×850, 390×844, 320×480, 360×640 e 412×915.
-- Em todos: 28 colunas, 476 segmentos, quadradinhos acesos conforme o áudio
-  de teste, múltiplas cores reais, botão depois do WhatsApp e tela sem rolagem.
-- As células acendem apenas de baixo para cima, preservando a cor de cada
-  quadradinho. Ao desligar, nenhuma célula permanece acesa.
-- Site em modo navegador: somente a página de instalação.
-- O app instalado usa o logotipo original também no ícone de cabeçalho.
-- Prévia Windows/celular criada com o áudio de teste, não streaming ao vivo.
-
-LIMITAÇÕES E VALIDACOES PENDENTES
---------------------------------
-- O navegador de teste com navegação local HTTP estava bloqueado neste
-  ambiente; a interface foi testada com HTML/CSS carregados em memória.
-- Falta confirmar o streaming real da Zeno, queda/retorno de internet e o
-  comportamento da PWA em segundo plano em aparelhos reais.
-- Sem liberação de acesso às amostras (CORS) e sem proxy, a reprodução pode
-  continuar, porém o equalizador fica sem medições em vez de simular barras.
-- Windows/Android/iOS podem limitar a instalação ou a abertura do aplicativo.
+LIMITAÇÕES
+----------
+- Se o navegador bloquear o acesso à amostra de áudio, o equalizador não
+  inventa níveis: as barras permanecem apagadas.
+- É necessária a verificação da transmissão real e da instalação em
+  Android, iOS e Windows antes da publicação final.

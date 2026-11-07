@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.6.0 — equalizador completo de 28 bandas, sem indicadores técnicos na tela. */
+/* Nativa FM 1.6.2 — equalizador profissional de 28 bandas com resposta rápida. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -50,6 +50,8 @@
     frequencyData: null,
     raf: 0,
     levels: new Float32Array(28),
+    litCounts: new Uint8Array(28),
+    lastMeterFrame: 0,
     frequencyRanges: [],
     metadata: null,
     metadataSeen: false,
@@ -59,6 +61,30 @@
 
   const BANDS = 28;
   const EQ_SEGMENTS = 17;
+  // Ataque: acompanha os picos quase instantaneamente. Decaimento: visual
+  // rápido, sem travar o painel ou criar barras fictícias.
+  const ATTACK_MS = 14;
+  const RELEASE_MS = 70;
+  // Padrão de seis cores em faixas fixas por ALTURA. Cada uma das 28
+  // colunas mantém a mesma sequência ao subir: verde-escuro, verde,
+  // verde-limão, amarelo, laranja e vermelho. Não é arco-íris.
+  // 17 segmentos distribuídos em 3 + 3 + 3 + 3 + 3 + 2 células.
+  const EQ_COLORS = Object.freeze({
+    darkGreen: '#168f4d',
+    green: '#28d472',
+    lime: '#adeb57',
+    yellow: '#f4d448',
+    orange: '#f99a3e',
+    red: '#f04c57'
+  });
+  const SEGMENT_PALETTE = Object.freeze([
+    ...Array(3).fill(EQ_COLORS.darkGreen),
+    ...Array(3).fill(EQ_COLORS.green),
+    ...Array(3).fill(EQ_COLORS.lime),
+    ...Array(3).fill(EQ_COLORS.yellow),
+    ...Array(3).fill(EQ_COLORS.orange),
+    ...Array(2).fill(EQ_COLORS.red)
+  ]);
   const STARTUP_TIMEOUT = 35000;
   const BUFFER_TIMEOUT = 28000;
   const STABLE_PLAYBACK = 20000;
@@ -91,18 +117,17 @@
   ui.requestSong.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de pedir uma música na programação.');
   ui.advertise.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de saber como anunciar com vocês. Podem enviar informações e valores?');
 
-  // Espectro de 28 bandas × 17 quadradinhos. Cada quadradinho recebe uma
-  // cor imutável, variando tanto por frequência quanto pela altura. Somente
-  // o estado ativo muda; os segmentos inferiores nunca trocam de cor.
-  const eqBars = Array.from({length: BANDS}, (_, band) => {
+  // 28 bandas × 17 segmentos. O nível de cada segmento possui uma cor
+  // FIXA: seis etapas de verde escuro até vermelho. Acendem
+  // sempre de baixo para cima sem recolorir os segmentos já acesos.
+  const eqBars = Array.from({length: BANDS}, () => {
     const column = document.createElement('span');
     column.className = 'eq-column';
     column.setAttribute('aria-hidden', 'true');
     const segments = Array.from({length: EQ_SEGMENTS}, (_, level) => {
       const cell = document.createElement('span');
       cell.className = 'eq-segment';
-      const hue = (195 + band * (315 / (BANDS - 1)) + level * 13) % 360;
-      cell.style.setProperty('--segment-color', `hsl(${hue.toFixed(1)} 95% 62%)`);
+      cell.style.setProperty('--segment-color', SEGMENT_PALETTE[level]);
       column.appendChild(cell);
       return cell;
     });
@@ -134,6 +159,8 @@
 
   function resetMeters(note = 'Equalizador aguardando áudio.') {
     state.levels.fill(0);
+    state.litCounts.fill(0);
+    state.lastMeterFrame = 0;
     for (const segments of eqBars) {
       for (const cell of segments) cell.classList.remove('is-lit');
     }
@@ -191,7 +218,9 @@
       analyser.fftSize = 4096;
       analyser.minDecibels = -100;
       analyser.maxDecibels = -12;
-      analyser.smoothingTimeConstant = .68;
+      // A suavização interna alta fazia o equalizador responder devagar.
+      // Um valor baixo deixa o movimento acompanhar as batidas reais.
+      analyser.smoothingTimeConstant = .08;
       // Única conexão ao destino para não duplicar áudio nem criar eco.
       source.connect(ctx.destination);
       source.connect(analyser);
@@ -225,13 +254,20 @@
     }
   }
 
-  function meterFrame() {
+  function meterFrame(timestamp) {
     state.raf = 0;
     if (!state.desired || !state.playing || !state.analyser || document.hidden) return;
     if (!state.context || state.context.state !== 'running') {
       resetMeters('Análise de áudio temporariamente suspensa.');
       return;
     }
+    // A velocidade de resposta é medida em milissegundos, não em número de
+    // quadros: mantém o ataque rápido mesmo em telas de 60/90/120 Hz.
+    const elapsed = state.lastMeterFrame > 0
+      ? Math.max(1, Math.min(50, timestamp - state.lastMeterFrame)) : 16.7;
+    state.lastMeterFrame = timestamp;
+    const attack = 1 - Math.exp(-elapsed / ATTACK_MS);
+    const release = 1 - Math.exp(-elapsed / RELEASE_MS);
     state.analyser.getFloatFrequencyData(state.frequencyData);
     let signalFound = false;
     for (let i = 0; i < BANDS; i++) {
@@ -248,14 +284,22 @@
       }
       const amplitude = count ? sum / count : 0;
       const db = amplitude ? 20 * Math.log10(amplitude) : -100;
-      // Escala visual com zero verdadeiro em silêncio. Cada coluna corresponde
-      // somente à sua faixa de frequência; não há valores predefinidos.
+      // Escala de frequências REAIS. Nenhum padrão decorativo é animado.
       const target = Math.max(0, Math.min(1, (db + 91) / 76));
-      const next = state.levels[i] + (target - state.levels[i]) * (target > state.levels[i] ? .46 : .17);
-      state.levels[i] = next < .008 ? 0 : next;
+      const previous = state.levels[i];
+      const next = previous + (target - previous) * (target > previous ? attack : release);
+      state.levels[i] = next < .006 ? 0 : next;
       const litCount = Math.min(EQ_SEGMENTS, Math.max(0, Math.round(state.levels[i] * EQ_SEGMENTS)));
-      for (let level = 0; level < EQ_SEGMENTS; level++) {
-        eqBars[i][level].classList.toggle('is-lit', level < litCount);
+      // Atualizar apenas as células que mudaram para manter boa fluidez
+      // também nos aparelhos mais simples.
+      const oldCount = state.litCounts[i];
+      if (oldCount !== litCount) {
+        if (litCount > oldCount) {
+          for (let level = oldCount; level < litCount; level++) eqBars[i][level].classList.add('is-lit');
+        } else {
+          for (let level = litCount; level < oldCount; level++) eqBars[i][level].classList.remove('is-lit');
+        }
+        state.litCounts[i] = litCount;
       }
       if (target > .055) signalFound = true;
     }
@@ -266,6 +310,7 @@
   function startMeterAnimation() {
     if (state.raf) cancelAnimationFrame(state.raf);
     state.raf = 0;
+    state.lastMeterFrame = 0;
     if (!state.analyser) {
       resetMeters('Áudio disponível. O dispositivo não permite visualizar as frequências.');
       return;

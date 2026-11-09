@@ -15,12 +15,12 @@
   <meta property="og:image" content="assets/nativa-fm-original.png">
   <link rel="icon" type="image/png" href="icons/favicon-64.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="manifest" href="manifest.webmanifest?v=1.9.1">
-  <link rel="stylesheet" href="styles.css?v=1.9.1">
-  <script src="gate.js?v=1.9.1"></script>
-  <script defer src="landing.js?v=1.9.1"></script>
-  <script defer src="config.js?v=1.9.1"></script>
-  <script defer src="app.js?v=1.9.1"></script>
+  <link rel="manifest" href="manifest.webmanifest?v=1.9.4">
+  <link rel="stylesheet" href="styles.css?v=1.9.4">
+  <script src="gate.js?v=1.9.4"></script>
+  <script defer src="landing.js?v=1.9.4"></script>
+  <script defer src="config.js?v=1.9.4"></script>
+  <script defer src="app.js?v=1.9.4"></script>
   <title>Nativa FM 98.7 — O amor de Entre Folhas</title>
 </head>
 <body>
@@ -96,19 +96,24 @@
         <span id="metadataStatus" class="sr-only" aria-live="polite">Aguardando metadados</span>
       </section>
 
-      <nav class="contact-bar" aria-label="Fale com a Nativa FM pelo WhatsApp">
+      <nav class="contact-bar" aria-label="Contato e compartilhamento da Nativa FM">
         <a id="requestSong" class="contact-action" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="25" height="25"><span>PEDIR MÚSICA</span></a>
         <a id="advertise" class="contact-action" href="https://wa.me/5533997210067" target="_blank" rel="noopener noreferrer"><img src="assets/whatsapp.svg" alt="" width="25" height="25"><span>ANUNCIE<br>COM A GENTE</span></a>
+
       </nav>
 
-      <section class="power-wrap" aria-label="Ligar ou desligar a Nativa FM">
-        <button id="powerButton" class="power-button" type="button" aria-pressed="false" aria-describedby="playbackHelper">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5v9M6.1 6.2a8.2 8.2 0 1 0 11.8 0"/></svg>
-          <span class="power-divider" aria-hidden="true"></span>
-          <span id="powerText">LIGAR RÁDIO</span>
-        </button>
-        <p id="playbackHelper" class="sr-only" role="status" aria-live="polite">Toque para ouvir a programação ao vivo.</p>
-      </section>
+      <div class="bottom-actions" aria-label="Reprodução e compartilhamento">
+        <section class="power-wrap" aria-label="Ligar ou desligar a Nativa FM">
+          <button id="powerButton" class="power-button" type="button" aria-pressed="false" aria-label="Ligar rádio" title="Ligar rádio" aria-describedby="playbackHelper">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5v9M6.1 6.2a8.2 8.2 0 1 0 11.8 0"/></svg>
+          </button>
+          <p id="playbackHelper" class="sr-only" role="status" aria-live="polite">Toque para ouvir a programação ao vivo.</p>
+        </section>
+        <a id="shareApp" class="share-action" href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="Compartilhar convite para instalar o aplicativo da Nativa FM pelo WhatsApp" title="Compartilhar Nativa FM pelo WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.7"/><circle cx="6" cy="12" r="2.7"/><circle cx="18" cy="19" r="2.7"/><path d="m8.6 10.7 6.8-4.1M8.6 13.3l6.8 4.1"/></svg>
+          <span>COMPARTILHAR</span>
+        </a>
+      </div>
 
       <p id="meterNote" class="sr-only">Aguardando áudio.</p>
       <p id="connectionText" class="sr-only" role="status" aria-live="polite">Rádio desligada.</p>

@@ -1,5 +1,5 @@
 'use strict';
-/* Nativa FM 1.9.1 — inicialização automática; visual 1.9.0 preservado. */
+/* Nativa FM 1.9.4 — GitHub Pages estático + compartilhar; visual preservado. */
 (() => {
   const cfg = window.NATIVA_CONFIG;
   if (!cfg) return;
@@ -11,7 +11,6 @@
   const $ = (id) => document.getElementById(id);
   const ui = {
     power: $('powerButton'),
-    powerText: $('powerText'),
     helper: $('playbackHelper'),
     badge: $('onAirBadge'),
     badgeText: $('badgeText'),
@@ -22,7 +21,8 @@
     meterNote: $('meterNote'),
     connection: $('connectionText'),
     requestSong: $('requestSong'),
-    advertise: $('advertise')
+    advertise: $('advertise'),
+    shareApp: $('shareApp')
   };
 
   const state = {
@@ -38,11 +38,8 @@
     resumeTimer: null,
     progressTimer: null,
     retries: 0,
-    proxy: false,
-    proxyFailed: false,
     corsBlocked: false,
     graphUnsupported: false,
-    currentProxy: false,
     currentGraph: false,
     currentHadAudio: false,
     context: null,
@@ -198,6 +195,12 @@
 
   ui.requestSong.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de pedir uma música na programação.');
   ui.advertise.href = whatsapp + encodeURIComponent('Olá, Nativa FM! Gostaria de saber como anunciar com vocês. Podem enviar informações e valores?');
+  // Link de convite configurável em config.js, abre diretamente o WhatsApp.
+  const installLink = (cfg.shareInstallUrl || '').trim();
+  const inviteText = `🎧 Você está convidado a conhecer a ${cfg.name} ${cfg.frequency}!\n` +
+    `📻 ${cfg.slogan}. Ouça nossa programação ao vivo!\n` +
+    `📲 Instale gratuitamente o aplicativo da rádio:\n${installLink}`;
+  ui.shareApp.href = 'https://wa.me/?text=' + encodeURIComponent(inviteText);
 
   function setConnectionInfo(text) {
     ui.connection.textContent = text;
@@ -216,7 +219,9 @@
     // Verde significa rádio desligada; vermelho significa rádio ligada,
     // inclusive enquanto conecta ou aguarda reconexão.
     ui.power.classList.toggle('is-powered', state.desired);
-    ui.powerText.textContent = state.desired ? 'DESLIGAR RÁDIO' : 'LIGAR RÁDIO';
+    const actionLabel = state.desired ? 'Desligar rádio' : 'Ligar rádio';
+    ui.power.setAttribute('aria-label', actionLabel);
+    ui.power.title = actionLabel;
     ui.helper.textContent = customMessage || helper;
     ui.power.setAttribute('aria-pressed', String(state.desired));
   }
@@ -430,12 +435,6 @@
 
   function maybeFallback(reason, hadPlayback) {
     if (!state.desired) return;
-    if (state.currentProxy && !state.proxyFailed) {
-      state.proxyFailed = true;
-      setConnectionInfo(`Servidor auxiliar indisponível. Tentando conexão direta com a rádio.`);
-      connectStream();
-      return;
-    }
     if (!state.currentProxy && state.currentGraph && !hadPlayback && !state.corsBlocked) {
       state.corsBlocked = true;
       setConnectionInfo('O navegador limitou a análise detalhada. Tentando reprodução nativa da rádio.');
@@ -455,8 +454,7 @@
     state.currentHadAudio = false;
     state.progressEvents = 0;
     state.lastProgressAt = Date.now();
-    state.currentProxy = state.proxy && !state.proxyFailed;
-    const canGraph = !state.graphUnsupported && (state.currentProxy || !state.corsBlocked);
+    const canGraph = !state.graphUnsupported && !state.corsBlocked;
     state.currentGraph = canGraph;
     let audio = new Audio();
     state.audio = audio;
@@ -464,20 +462,20 @@
     audio.volume = 1;
     audio.loop = false;
     if (canGraph) audio.crossOrigin = 'anonymous';
-    audio.src = state.currentProxy ? './api/stream' : streamUrl;
+    audio.src = streamUrl;
     if (canGraph && !setupMeterGraph(audio)) {
       state.graphUnsupported = true;
       discardAudio();
       audio = new Audio();
       audio.preload = 'none';
       audio.volume = 1;
-      audio.src = state.currentProxy ? './api/stream' : streamUrl;
+      audio.src = streamUrl;
       state.audio = audio;
       state.currentGraph = false;
     }
 
     setStatus('connecting');
-    setConnectionInfo(`Conectando ${state.currentProxy ? 'pelo aplicativo' : 'diretamente à Nativa FM'} com reconexão automática ativa.`);
+    setConnectionInfo('Conectando diretamente à Nativa FM com reconexão automática ativa.');
     resetMeters('Preparando a leitura do streaming…');
     const current = audio;
     const valid = () => state.desired && state.audio === current && state.token === token;
@@ -586,7 +584,6 @@
     if (state.desired) return;
     state.desired = true;
     state.retries = 0;
-    state.proxyFailed = false;
     connectStream();
   }
 
@@ -653,7 +650,7 @@
       ui.metaLabel.textContent = 'METADADOS INDISPONÍVEIS';
       return;
     }
-    const source = new EventSource(state.proxy ? './api/metadata' : metadataUrl);
+    const source = new EventSource(metadataUrl);
     state.metadata = source;
     ui.metaLabel.textContent = 'AGUARDANDO DADOS';
     source.onmessage = (event) => {
@@ -670,31 +667,6 @@
       if (state.metadata === source) ui.metaLabel.textContent = state.metadataSeen ? 'ATUALIZANDO…' : 'SEM METADADOS';
     };
   }
-
-  async function detectProxy() {
-    const abort = new AbortController();
-    const timer = setTimeout(() => abort.abort(), 2000);
-    try {
-      const result = await fetch('./api/health', {signal: abort.signal, cache: 'no-store'});
-      if (!result.ok || !result.headers.get('content-type')?.includes('application/json')) return false;
-      const data = await result.json();
-      return data?.service === 'nativa-fm-proxy' && data?.ready === true;
-    } catch (_) {
-      return false;
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-  // A interface instalada começa em CONECTANDO, sem exigir clique.
-  // Aguarda apenas a verificação rápida do proxy para priorizar o streaming
-  // na mesma origem (o equalizador continua com análise de áudio real).
-  // Se o usuário desligar enquanto isso acontece, a conexão não será aberta.
-  detectProxy().then((ready) => {
-    state.proxy = ready;
-    startMetadata();
-    if (state.desired && !state.audio && !state.retryTimer) connectStream();
-  });
 
   window.addEventListener('online', () => {
     if (state.desired && !state.playing) connectStream();
@@ -719,7 +691,7 @@
   });
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.9.1').catch((error) => console.warn('Service Worker:', error)));
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=1.9.4').catch((error) => console.warn('Service Worker:', error)));
   }
 
   // Inicialização automática SOMENTE na PWA instalada. Na página pública
@@ -731,4 +703,7 @@
   setConnectionInfo('Conectando à programação ao vivo.');
   resetMeters('Preparando o equalizador.');
   updateMediaSession();
+  // GitHub Pages é 100% estático: sem sondagem de servidor Node.js.
+  startMetadata();
+  if (state.desired && !state.audio && !state.retryTimer) connectStream();
 })();

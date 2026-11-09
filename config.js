@@ -6,5 +6,7 @@ window.NATIVA_CONFIG = Object.freeze({
   location: 'Entre Folhas · MG',
   streamUrl: 'https://stream.zeno.fm/6lsfodimfbztv',
   zenoMount: '6lsfodimfbztv',
-  whatsappNumber: '5533997210067'
+  whatsappNumber: '5533997210067',
+  // EDITE SOMENTE ESTE LINK após publicar no GitHub Pages:
+  shareInstallUrl: 'https://SEU-USUARIO.github.io/nativa-fm/' 
 });

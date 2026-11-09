@@ -210,3 +210,55 @@ html:not([data-pwa-display="standalone"]) #appShell{display:none!important}
  box-shadow:inset 0 2px 14px #ffb5a672,inset 0 -8px 16px #130006,0 0 16px #ff2429ca,0 0 36px #fe081f78;
 }
 @media(max-height:530px){.neon-background{top:-7%;height:105%;}}
+
+/* V1.9.3 — respeita as duas ações WhatsApp do layout original.
+   Compartilhar ocupa uma faixa compacta própria, sem rolagem. */
+.share-action{flex:0 0 auto;min-height:clamp(35px,5.1dvh,48px);display:flex;align-items:center;justify-content:center;gap:13px;border-radius:15px;border:1.5px solid #60f759;background:linear-gradient(110deg,#05260f,#0a3b1c,#05260f);box-shadow:0 0 11px #20cf3042,inset 0 0 10px #17eb2a18;color:#fbfffb;font-size:clamp(12px,1.8dvh,16px);font-weight:900;letter-spacing:.4px}
+.share-action svg{width:clamp(20px,3.1dvh,27px);height:clamp(20px,3.1dvh,27px);fill:none;stroke:#ddffe1;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px #64ff53a1)}
+.share-action:hover{background:#125124}
+@media(max-height:685px){.share-action{min-height:33px;border-radius:12px}}
+@media(max-height:505px){.share-action{min-height:29px;font-size:11px}}
+
+
+/* V1.9.4: controles inferiores exatamente no arranjo aprovado:
+   ligar/desligar sem texto à esquerda; compartilhar à direita. */
+.bottom-actions{
+  flex:0 0 auto;
+  min-width:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,2.75fr);
+  gap:clamp(8px,2vw,13px);
+  align-items:stretch;
+}
+.bottom-actions .power-wrap{padding:0;min-width:0;display:flex}
+.bottom-actions .power-button{
+  width:100%;height:100%;min-height:clamp(54px,8.5dvh,82px);
+  gap:0;border-radius:clamp(16px,2.7dvh,23px);
+}
+.bottom-actions .power-button svg{width:clamp(29px,5.5dvh,48px);height:clamp(29px,5.5dvh,48px)}
+.bottom-actions .share-action{
+  height:100%;width:100%;min-width:0;
+  min-height:clamp(54px,8.5dvh,82px);
+  gap:clamp(7px,2.5vw,15px);
+  border-radius:clamp(16px,2.7dvh,23px);
+  border:2px solid #86ff5d;
+  background:linear-gradient(180deg,#16d32b 0%,#008c17 48%,#005716 100%);
+  box-shadow:inset 0 2px 10px #b7ff8e5c,inset 0 -8px 17px #001b0899,0 0 13px #47ff4caa,0 0 25px #10ee3252;
+  font-size:clamp(11px,2.05dvh,19px);
+  letter-spacing:.2px;
+  white-space:nowrap;
+}
+.bottom-actions .share-action svg{width:clamp(23px,4.3dvh,38px);height:clamp(23px,4.3dvh,38px);stroke:#fff}
+.bottom-actions .share-action:hover{background:linear-gradient(180deg,#23e636,#008f20,#005b17)}
+@media(max-height:685px){
+  .bottom-actions .power-button,.bottom-actions .share-action{min-height:49px;border-radius:16px}
+}
+@media(max-height:505px){
+  .bottom-actions .power-button,.bottom-actions .share-action{min-height:43px;border-radius:13px}
+  .bottom-actions .share-action{font-size:11px;gap:7px}
+}
+@media(max-width:345px){
+  .bottom-actions{grid-template-columns:minmax(0,1fr) minmax(0,2.7fr);gap:7px}
+  .bottom-actions .share-action{font-size:clamp(10px,3vw,12px);gap:6px}
+  .bottom-actions .share-action svg{width:22px;height:22px}
+}
